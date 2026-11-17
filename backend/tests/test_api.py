@@ -87,3 +87,46 @@ def test_document_duplicate_number_is_rejected():
     assert client.post("/api/documents", json=payload).status_code == 201
     duplicate = client.post("/api/documents", json=payload)
     assert duplicate.status_code == 409
+
+
+def test_document_revision_creates_new_version_without_overwriting_old_one():
+    payload = {
+        "document_number": "VA-REV-001",
+        "title": "Revisionsprüfung",
+        "document_type_code": "VA",
+        "system_area_code": "IATF_QM",
+        "content": {"text": "Version 1"},
+    }
+    created = client.post("/api/documents", json=payload)
+    assert created.status_code == 201
+    document = created.json()
+    first_version = document["versions"][0]
+
+    revised = client.post(
+        f"/api/documents/{document['id']}/versions",
+        json={"content": {"text": "Version 2"}, "change_reason": "Fachliche Aktualisierung"},
+    )
+    assert revised.status_code == 201
+    assert revised.json()["version_number"] == 2
+    assert revised.json()["content"]["text"] == "Version 2"
+
+    fetched = client.get("/api/documents")
+    saved = next(item for item in fetched.json() if item["id"] == document["id"])
+    assert len(saved["versions"]) == 2
+    versions = sorted(saved["versions"], key=lambda item: item["version_number"])
+    assert versions[0]["id"] == first_version["id"]
+    assert versions[0]["content"]["text"] == "Version 1"
+    assert versions[1]["content"]["text"] == "Version 2"
+
+
+def test_document_revision_requires_reason_and_existing_document():
+    missing = client.post(
+        "/api/documents/not-existing/versions",
+        json={"content": {"text": "x"}, "change_reason": "Korrektur"},
+    )
+    assert missing.status_code == 404
+    invalid = client.post(
+        "/api/documents/not-existing/versions",
+        json={"content": {}, "change_reason": "x"},
+    )
+    assert invalid.status_code == 422
