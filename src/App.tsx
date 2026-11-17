@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { LayoutDashboard, Workflow, FileText, ShieldCheck, Settings, Users, Plus, Search, Sun, Moon, ChevronRight, ClipboardList, Gauge, Boxes, AlertTriangle, Target, X, Save, Archive, Eye, Download, Link2, CheckCircle2, Clock3, FilePlus2, Building2 } from 'lucide-react';
+import { LayoutDashboard, Workflow, FileText, ShieldCheck, Plus, Search, Sun, Moon, ChevronRight, Gauge, AlertTriangle, Target, X, Save, Archive, Eye, CheckCircle2, FilePlus2, Building2 } from 'lucide-react';
 
 type Area='IATF_QM'|'IMS_ENV_ENERGY_OHS';
 type Status='Entwurf'|'In Prüfung'|'Freigegeben'|'Überprüfung fällig'|'Zurückgezogen';
