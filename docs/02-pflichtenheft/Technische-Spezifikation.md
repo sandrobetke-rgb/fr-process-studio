@@ -1,6 +1,6 @@
 # Technische Spezifikation – F&R Process Studio
 
-**Version:** 0.2 · **Stand:** 17.11.2026 · **Status:** Architekturvorschlag
+**Version:** 0.3 · **Stand:** 17.11.2026 · **Status:** Architekturvorschlag
 
 ## Zielbild
 Browserbasierte, modular aufgebaute Webanwendung. Das Frontend ist ein React-/TypeScript-Projekt mit Vite. Die grafische Modellierung basiert auf @xyflow/react (React Flow). Die erste Version ist ein UI-Prototyp; zentrale Speicherung und Backend folgen.
@@ -31,7 +31,7 @@ Produktivdaten gehören nicht in Git. Geheimnisse werden ausschließlich über s
 - Navigation für Cockpit und Dokumente als Prototypseiten
 
 ## Nicht implementiert
-Backend, PostgreSQL, Authentifizierung, Mehrbenutzerbetrieb, zentrale Speicherung, Freigabe-Workflow, Audit-Trail, produktive Turtle-Datenpflege, KI-Änderungsanalyse, Export und automatisierte Tests.
+Backend, PostgreSQL, Authentifizierung, Mehrbenutzerbetrieb, zentrale Speicherung, Freigabe-Workflow, Audit-Trail, produktive Turtle-Datenpflege, produktive Dokumentenerstellung/-lenkung, KI-Änderungsanalyse, Export und automatisierte Tests.
 
 ## Architekturentscheidungen mit Prüfbedarf
 - React Flow Lizenzbedingungen für den konkreten Einsatz prüfen
