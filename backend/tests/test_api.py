@@ -48,3 +48,42 @@ def test_duplicate_process_number_is_rejected():
     assert client.post("/api/processes", json=payload).status_code == 201
     duplicate = client.post("/api/processes", json=payload)
     assert duplicate.status_code == 409
+
+
+def test_document_types_and_document_creation():
+    types_response = client.get("/api/document-types")
+    assert types_response.status_code == 200
+    assert {item["code"] for item in types_response.json()} >= {"VA", "AA", "PL", "BA"}
+
+    payload = {
+        "document_number": "VA-TEST-001",
+        "title": "Test-Verfahrensanweisung",
+        "document_type_code": "VA",
+        "owner": "QM",
+        "system_area_code": "IATF_QM",
+        "content": {"sections": [{"heading": "Zweck", "text": "Test"}]},
+        "change_reason": "Testanlage",
+    }
+    created = client.post("/api/documents", json=payload)
+    assert created.status_code == 201
+    body = created.json()
+    assert body["document_number"] == "VA-TEST-001"
+    assert len(body["versions"]) == 1
+    assert body["versions"][0]["version_number"] == 1
+    assert len(body["versions"][0]["content_hash"]) == 64
+
+    listed = client.get("/api/documents")
+    assert listed.status_code == 200
+    assert any(item["document_number"] == "VA-TEST-001" for item in listed.json())
+
+
+def test_document_duplicate_number_is_rejected():
+    payload = {
+        "document_number": "DOC-DUP-001",
+        "title": "Erstes Dokument",
+        "document_type_code": "AA",
+        "system_area_code": "IMS_ENV_ENERGY_OHS",
+    }
+    assert client.post("/api/documents", json=payload).status_code == 201
+    duplicate = client.post("/api/documents", json=payload)
+    assert duplicate.status_code == 409
