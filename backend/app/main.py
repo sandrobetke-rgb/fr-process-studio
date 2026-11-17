@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from .config import settings
 from .database import get_db
 from .models import AuditEvent, DocumentMaster, DocumentType, DocumentVersion, ManagementSystemArea, Process, ProcessVersion
-from .schemas import DocumentCreate, DocumentRead, ProcessCreate, ProcessRead
+from .schemas import DocumentCreate, DocumentRead, DocumentVersionCreate, DocumentVersionCreateRead, ProcessCreate, ProcessRead
 
 app = FastAPI(title=settings.app_name, version="0.1.0")
 app.add_middleware(
@@ -132,3 +132,41 @@ def create_document(payload: DocumentCreate, db: Session = Depends(get_db)) -> D
     db.commit()
     db.refresh(document)
     return document
+
+
+
+@app.post("/api/documents/{document_id}/versions", response_model=DocumentVersionCreateRead, status_code=status.HTTP_201_CREATED)
+def create_document_version(document_id: str, payload: DocumentVersionCreate, db: Session = Depends(get_db)) -> DocumentVersion:
+    document = db.get(DocumentMaster, document_id)
+    if document is None:
+        raise HTTPException(status_code=404, detail="Dokument nicht gefunden")
+    latest = db.scalar(
+        select(DocumentVersion)
+        .where(DocumentVersion.document_id == document_id)
+        .order_by(DocumentVersion.version_number.desc())
+        .limit(1)
+    )
+    next_number = (latest.version_number if latest else 0) + 1
+    canonical_content = json.dumps(payload.content, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    content_hash = hashlib.sha256(canonical_content.encode("utf-8")).hexdigest()
+    version = DocumentVersion(
+        document_id=document_id,
+        version_number=next_number,
+        content=payload.content,
+        change_reason=payload.change_reason,
+        status="DRAFT",
+        content_hash=content_hash,
+    )
+    db.add(version)
+    db.flush()
+    document.status = "DRAFT"
+    db.add(AuditEvent(
+        action="DOCUMENT_VERSION_CREATED",
+        object_type="DocumentMaster",
+        object_id=document.id,
+        version_id=version.id,
+        reason=payload.change_reason,
+    ))
+    db.commit()
+    db.refresh(version)
+    return version
