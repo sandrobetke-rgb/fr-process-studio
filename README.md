@@ -1,8 +1,8 @@
 # F&R Process Studio
 
-Browserbasierter Prototyp für grafisches IATF-Prozessmanagement mit integrierten Umwelt- und Energiethemen bei Friedrichs & Rath GmbH.
+Browserbasierter Prototyp für grafisches Prozessmanagement mit zwei Systembereichen: IATF 16949 separat sowie integriertes Umwelt-, Energie- und Arbeitsschutzmanagement (angelehnt an ISO 45001) bei Friedrichs & Rath GmbH.
 
-> **Status:** Früher Entwicklungsprototyp – nicht für produktive IMS-Daten oder Auditnachweise freigegeben.
+> **Status:** Früher Entwicklungsprototyp – nicht für produktive Managementsystemdaten oder Auditnachweise freigegeben.
 
 ## Lokaler Start
 
@@ -23,7 +23,7 @@ npm run build
 - Grafischer Prozessdesigner auf Basis von React Flow
 - Beispielprozess, Knotenbearbeitung und Verbindungen
 - Turtle-Ansicht mit klar gekennzeichneten Platzhaltern
-- IMS-Cockpit- und Dokumenten-Prototyp
+- Management-Cockpit- und Dokumenten-Prototyp
 - Light-/Dark-Modus
 
 ## Noch nicht enthalten
