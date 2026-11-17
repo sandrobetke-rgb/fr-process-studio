@@ -1,28 +1,28 @@
 # Lastenheft – F&R Process Studio
 
 **Dokument-ID:** LF-FRPS-001  
-**Version:** 0.4  
+**Version:** 0.5  
 **Stand:** 17.11.2026  
 **Status:** Arbeitsstand – UI-Entwicklung
 
 ## 1. Ziel
 
-F&R Process Studio ist eine browserbasierte Anwendung zur grafischen Modellierung, Verwaltung, verständlichen Darstellung und kontrollierten Änderung der IMS-Prozesslandschaft von Friedrichs & Rath GmbH.
+F&R Process Studio ist eine browserbasierte Anwendung zur grafischen Modellierung, Verwaltung, verständlichen Darstellung und kontrollierten Änderung der Prozesslandschaft des IATF-Managementsystems von Friedrichs & Rath GmbH.
 
 ## 2. Projektentscheidungen
 
 - Produktname: F&R Process Studio
 - Grafischer Prozessdesigner mit intuitiver Drag-and-drop-Bedienung
 - Entwicklung und Quellcodeverwaltung über GitHub
-- Startumfang: integriertes Managementsystem (IMS)
-- Normen im Startumfang: IATF 16949, ISO 14001 und ISO 50001
+- Startumfang: IATF 16949 als führendes Managementsystem; Umwelt- und Energiemanagement sind integriert. Arbeitsschutzprozesse orientieren sich an ISO 45001.
+- Führendes Managementsystem: IATF 16949. Umwelt- und Energiemanagement sind in das System integriert. Arbeitsschutzprozesse werden angelehnt an ISO 45001 gestaltet; daraus wird keine Zertifizierung nach ISO 45001 abgeleitet.
 - Umschaltbare Light-/Dark-Oberfläche; Einstellung je Benutzer speichern
 - Dezenter Copyright-Hinweis „© splash Syncworks“ auf allen Anwendungsseiten und eigenen Exportvorlagen
 - Unternehmensdaten und produktive Datenhaltung strikt vom Quellcode-Repository trennen
 
 ## 3. Nutzergruppen
 
-Administratoren, Geschäftsführung, IMS-/Qualitätsmanagement, Umwelt- und Energiemanagement, Prozessverantwortliche, Führungskräfte, Mitarbeiter mit Leserechten sowie Auditoren mit kontrolliertem Zugriff.
+Administratoren, Geschäftsführung, IATF-/Qualitätsmanagement, Umwelt- und Energiemanagement, Prozessverantwortliche, Führungskräfte, Mitarbeiter mit Leserechten sowie Auditoren mit kontrolliertem Zugriff.
 
 ## 4. Funktionale Anforderungen
 
@@ -41,8 +41,8 @@ Aus den Prozessdaten einen strukturierten Steckbrief und einen Entwurf der Proze
 ### 4.5 Mitarbeiteransicht
 Freigegebene Prozesse in einfacher, verständlicher Sprache darstellen. Prozessschritte, Rollen, relevante Arbeitsanweisungen und Dokumente sowie optionale Bilder/Videos unterstützen. Responsive Nutzung auf PC, Tablet und Smartphone.
 
-### 4.6 IMS- und Normenunterstützung
-Prozesse und Dokumente den Anforderungen der IATF 16949, ISO 14001 und ISO 50001 zuordnen. Verantwortlichkeiten, Risiken und Chancen, Kennzahlen, Ziele, Maßnahmen und Nachweise dokumentieren. Normzuordnungen müssen fachlich durch F&R geprüft werden.
+### 4.6 Unterstützung des IATF-Managementsystems und integrierter Bereiche
+IATF 16949 bildet den normativen Rahmen des führenden Managementsystems. Umwelt- und Energiemanagement werden integriert berücksichtigt. Arbeitsschutzprozesse können an ISO 45001 angelehnt abgebildet werden; dies darf nicht als Zertifizierung oder vollständige Normkonformität nach ISO 45001 dargestellt werden. Verantwortlichkeiten, Risiken und Chancen, Kennzahlen, Ziele, Maßnahmen und Nachweise werden dokumentiert. Zuordnungen müssen fachlich durch F&R geprüft werden.
 
 ### 4.7 Änderungsmanagement
 Änderungswünsche in natürlicher Sprache erfassen. Auf Anfrage das Änderungsprotokoll mit offenen und abgeschlossenen Änderungen anzeigen. Eine KI darf betroffene Prozesse, Dokumente, Rollen, Kennzahlen, Risiken und Normzuordnungen analysieren und Änderungsvorschläge erstellen. Keine automatische Änderung oder Freigabe bereits genehmigter Inhalte. Jede Änderung benötigt menschliche Prüfung und Freigabe.
@@ -59,7 +59,7 @@ Rollenbasierte Rechte. Mitarbeiter standardmäßig lesend auf freigegebene Inhal
 ### 4.11 Themes
 Light- und Dark-Modus für alle Module, je Benutzer speicherbar. Lesbarkeit und Kontrast in beiden Modi sicherstellen. Druckansicht gesondert optimieren.
 
-### 4.12 IMS-Cockpit
+### 4.12 Management-Cockpit
 Prozessstatus, offene Änderungen, überfällige Prüfungen, fehlende Kennzahlen, Dokumentenstatus und offene Maßnahmen darstellen.
 
 ## 5. Nichtfunktionale Anforderungen
