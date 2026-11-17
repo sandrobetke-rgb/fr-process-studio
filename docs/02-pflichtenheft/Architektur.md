@@ -1,9 +1,9 @@
 # Architektur – F&R Process Studio
 
 ## Systemkontext
-F&R Process Studio verwaltet Prozessmodelle des IATF-Managementsystems einschließlich integrierter Umwelt- und Energiethemen sowie arbeitsschutzbezogener Prozesse und zugehörige dokumentierte Informationen. Das GitHub-Repository enthält ausschließlich Quellcode und technische Dokumentation, nicht die produktiven IMS-Daten.
+F&R Process Studio verwaltet Prozessmodelle des IATF-Managementsystems einschließlich integrierter Umwelt- und Energiethemen sowie arbeitsschutzbezogener Prozesse und zugehörige dokumentierte Informationen. Das GitHub-Repository enthält ausschließlich Quellcode und technische Dokumentation, nicht die produktiven Managementsystemdaten.
 
-## Komponenten
+## Fachliche Systemstruktur\nDie Anwendung bildet zwei unterscheidbare Bereiche ab: IATF 16949 separat sowie den integrierten Bereich Umwelt (ISO 14001), Energie (ISO 50001) und Arbeitsschutzprozesse angelehnt an ISO 45001. Gemeinsame Prozesse und Schnittstellen können verknüpft werden, ohne die Systembereiche zu vermischen.\n\n## Komponenten
 1. Web-Frontend: Prozessdesigner, Prozesslandkarte, Turtle-Ansicht, Mitarbeiteransicht, Cockpit.
 2. API-Backend (geplant): Validierung, Geschäftsregeln, Rechteprüfung und Versionierung.
 3. PostgreSQL (geplant): Prozesse, Versionen, Rollen, Änderungen, Freigaben und Verknüpfungen.
