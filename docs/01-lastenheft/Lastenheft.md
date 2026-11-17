@@ -1,7 +1,7 @@
 # Lastenheft – F&R Process Studio
 
 **Dokument-ID:** LF-FRPS-001  
-**Version:** 0.5  
+**Version:** 0.6  
 **Stand:** 17.11.2026  
 **Status:** Arbeitsstand – UI-Entwicklung
 
@@ -14,15 +14,15 @@ F&R Process Studio ist eine browserbasierte Anwendung zur grafischen Modellierun
 - Produktname: F&R Process Studio
 - Grafischer Prozessdesigner mit intuitiver Drag-and-drop-Bedienung
 - Entwicklung und Quellcodeverwaltung über GitHub
-- Startumfang: IATF 16949 als führendes Managementsystem; Umwelt- und Energiemanagement sind integriert. Arbeitsschutzprozesse orientieren sich an ISO 45001.
-- Führendes Managementsystem: IATF 16949. Umwelt- und Energiemanagement sind in das System integriert. Arbeitsschutzprozesse werden angelehnt an ISO 45001 gestaltet; daraus wird keine Zertifizierung nach ISO 45001 abgeleitet.
+- Zwei klar getrennte Systembereiche: (1) IATF 16949 als eigenständiges Qualitätsmanagementsystem; (2) integriertes Managementsystem für Umwelt (ISO 14001), Energie (ISO 50001) und Arbeitsschutzprozesse angelehnt an ISO 45001.
+- IATF 16949 wird gesondert geführt. Umweltmanagement nach ISO 14001 und Energiemanagement nach ISO 50001 bilden gemeinsam mit Arbeitsschutzprozessen angelehnt an ISO 45001 den integrierten Managementsystembereich. Die Anlehnung an ISO 45001 ist keine Aussage über eine Zertifizierung.
 - Umschaltbare Light-/Dark-Oberfläche; Einstellung je Benutzer speichern
 - Dezenter Copyright-Hinweis „© splash Syncworks“ auf allen Anwendungsseiten und eigenen Exportvorlagen
 - Unternehmensdaten und produktive Datenhaltung strikt vom Quellcode-Repository trennen
 
 ## 3. Nutzergruppen
 
-Administratoren, Geschäftsführung, IATF-/Qualitätsmanagement, Umwelt- und Energiemanagement, Prozessverantwortliche, Führungskräfte, Mitarbeiter mit Leserechten sowie Auditoren mit kontrolliertem Zugriff.
+Administratoren, Geschäftsführung, IATF-/Qualitätsmanagement, integriertes Umwelt-, Energie- und Arbeitsschutzmanagement, Prozessverantwortliche, Führungskräfte, Mitarbeiter mit Leserechten sowie Auditoren mit kontrolliertem Zugriff.
 
 ## 4. Funktionale Anforderungen
 
