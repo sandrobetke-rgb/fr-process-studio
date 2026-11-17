@@ -1,7 +1,7 @@
 # Lastenheft – F&R Process Studio
 
 **Dokument-ID:** LF-FRPS-001  
-**Version:** 0.9  
+**Version:** 1.0  
 **Stand:** 17.11.2026  
 **Status:** Arbeitsstand – UI-Prototyp
 
