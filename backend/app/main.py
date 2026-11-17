@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from .config import settings
-from .database import Base, engine, get_db
+from .database import get_db
 from .models import AuditEvent, ManagementSystemArea, Process, ProcessVersion
 from .schemas import ProcessCreate, ProcessRead
 
@@ -16,13 +16,6 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type", "Authorization"],
 )
-
-
-@app.on_event("startup")
-def initialize_development_database() -> None:
-    # Temporary bootstrap for local development. Production must use reviewed Alembic migrations.
-    if settings.environment == "development":
-        Base.metadata.create_all(bind=engine)
 
 
 @app.get("/api/health")
