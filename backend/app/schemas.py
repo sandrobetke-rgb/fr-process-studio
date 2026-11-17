@@ -93,3 +93,10 @@ class DocumentProcessLinkRead(BaseModel):
     process_id: str
     process_step_id: str
     created_at: datetime
+
+
+class ProcessVersionCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=250)
+    description: str = ""
+    content: dict = Field(default_factory=dict)
+    change_reason: str = Field(min_length=3, max_length=2000)
