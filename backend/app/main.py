@@ -249,3 +249,37 @@ def create_process_version(process_id: str, payload: ProcessVersionCreate, db: S
     db.commit()
     db.refresh(process)
     return process
+
+
+
+@app.get("/api/processes/{process_id}/documents")
+def list_process_documents(process_id: str, db: Session = Depends(get_db)) -> list[dict]:
+    if db.get(Process, process_id) is None:
+        raise HTTPException(status_code=404, detail="Prozess nicht gefunden")
+    rows = db.execute(
+        select(DocumentProcessLink, DocumentMaster, DocumentVersion)
+        .join(DocumentMaster, DocumentMaster.id == DocumentProcessLink.document_id)
+        .outerjoin(
+            DocumentVersion,
+            (DocumentVersion.document_id == DocumentMaster.id)
+            & (DocumentVersion.version_number == select(DocumentVersion.version_number)
+               .where(DocumentVersion.document_id == DocumentMaster.id)
+               .order_by(DocumentVersion.version_number.desc())
+               .limit(1).scalar_subquery())
+        )
+        .where(DocumentProcessLink.process_id == process_id)
+        .order_by(DocumentMaster.document_number)
+    ).all()
+    return [
+        {
+            "link_id": link.id,
+            "document_id": document.id,
+            "document_number": document.document_number,
+            "title": document.title,
+            "status": document.status,
+            "process_step_id": link.process_step_id,
+            "latest_version": version.version_number if version else None,
+            "latest_version_status": version.status if version else None,
+        }
+        for link, document, version in rows
+    ]
