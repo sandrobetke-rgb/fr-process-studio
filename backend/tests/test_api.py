@@ -173,3 +173,31 @@ def test_document_can_be_linked_to_process_and_step():
         json={"process_id": process["id"], "process_step_id": "step-press-01"},
     )
     assert duplicate.status_code == 409
+
+
+def test_process_revision_creates_new_version_and_preserves_original():
+    created = client.post("/api/processes", json={
+        "process_number": "PROC-REV-001",
+        "name": "Erstfassung",
+        "content": {"steps": ["A"]},
+    })
+    assert created.status_code == 201
+    process = created.json()
+    first = process["versions"][0]
+
+    revised = client.post(
+        f"/api/processes/{process['id']}/versions",
+        json={
+            "name": "Überarbeitete Fassung",
+            "description": "Ergänzter Ablauf",
+            "content": {"steps": ["A", "B"]},
+            "change_reason": "Neuer Prüfschritt aufgenommen",
+        },
+    )
+    assert revised.status_code == 201
+    versions = sorted(revised.json()["versions"], key=lambda item: item["version_number"])
+    assert len(versions) == 2
+    assert versions[0]["id"] == first["id"]
+    assert versions[0]["content"] == {"steps": ["A"]}
+    assert versions[1]["version_number"] == 2
+    assert versions[1]["content"] == {"steps": ["A", "B"]}
