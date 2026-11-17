@@ -1,52 +1,80 @@
 # Technische Spezifikation – F&R Process Studio
 
-**Version:** 0.5 · **Stand:** 17.11.2026 · **Status:** Architekturvorschlag
+**Version:** 0.6 · **Stand:** 17.11.2026 · **Status:** Architektur- und Datenmodellvorschlag
 
 ## Zielbild
-Browserbasierte, modular aufgebaute Webanwendung. Das Frontend ist ein React-/TypeScript-Projekt mit Vite. Die grafische Modellierung basiert auf @xyflow/react (React Flow). Die erste Version ist ein UI-Prototyp; zentrale Speicherung und Backend folgen.
+
+Browserbasierte, modular aufgebaute Webanwendung. Das bestehende Frontend ist React/TypeScript mit Vite und @xyflow/react (React Flow). Die aktuelle Anwendung ist ein lokaler UI-Prototyp. Zentrale Speicherung, Backend und produktive Benutzerverwaltung sind noch nicht implementiert.
 
 ## Vorgeschlagene Zielarchitektur
+
 - Frontend: React, TypeScript, Vite, @xyflow/react
-- Backend (geplant): Python FastAPI mit REST API
-- Datenbank (geplant): PostgreSQL
-- Betrieb (geplant): Docker; Zielumgebung nach Entscheidung von F&R
-- CI (geplant): GitHub Actions für Build und Tests
-- KI (später): austauschbare Schnittstelle; keine automatische Freigabe
+- Backend: Python FastAPI mit versionierter REST-API (geplant)
+- Datenbank: PostgreSQL (geplant)
+- Dateispeicher: S3-kompatibler Objektspeicher oder kontrollierter interner Speicher (Entscheidung offen)
+- Betrieb: Docker; Hosting-Zielumgebung nach Entscheidung von F&R
+- CI: GitHub Actions für reproduzierbaren Build, Linting und Tests
+- KI: austauschbarer Adapter; nur Analyse und Entwurfsvorschläge, keine autonome Freigabe
 
-## Fachliche Systemstruktur\nZwei getrennte Systembereiche werden modelliert: IATF 16949 als eigenständiges Qualitätsmanagementsystem sowie ein integrierter Managementsystembereich für Umwelt (ISO 14001), Energie (ISO 50001) und Arbeitsschutzprozesse angelehnt an ISO 45001. Prozesse dürfen mehrere Bereiche berühren; Systemzuordnung und Nachweisführung bleiben explizit. Die ISO-45001-Anlehnung ist nicht als Zertifizierungsstatus abzubilden.\n\n## Datenmodell – erste fachliche Entitäten
-Process, ProcessVersion, ProcessNode, ProcessEdge, TurtleField, Document, NormReference, Role, User, ChangeRequest, ChangeImpact, Approval, AuditEvent, KPI, Risk, Opportunity.
+## Fachliche Systemstruktur
 
-## Workflow, Freigabe und Revisionssicherheit
-Workflow-Engine mit konfigurierbaren Statusübergängen, Aufgaben, Rollen, Stellvertretungen, Fristen, Erinnerungen, Eskalationen, Rückweisungen und Kommentaren. Server erzwingt Funktionstrennung und Berechtigungen. Jede Freigabe referenziert eine immutable DocumentVersion und speichert Benutzeridentität, Authentifizierungsstärke, Freigabeabsicht, Zeitstempel und Ergebnis.
+Zwei getrennte Systembereiche werden modelliert: IATF 16949 als eigenständiges Qualitätsmanagementsystem sowie ein integrierter Managementsystembereich für Umwelt (ISO 14001), Energie (ISO 50001) und Arbeitsschutzprozesse angelehnt an ISO 45001. Prozesse dürfen mehrere Bereiche berühren; Systemzuordnung und Nachweisführung bleiben explizit. Die ISO-45001-Anlehnung ist nicht als Zertifizierungsstatus abzubilden.
 
-AuditEvent wird append-only gespeichert. Ereignisse enthalten Akteur, Aktion, Objekt-ID, Versions-ID, Zeitstempel, Ergebnis, Änderungsgrund und Korrelations-ID. Manipulationserkennung durch kryptografische Hashes/Hash-Verkettung und regelmäßige Integritätsprüfung; Protokolle in getrennt geschütztem Speicher. Hash-Verkettung allein ist keine absolute Revisionssicherheitsgarantie. Freigegebene Inhalte werden als unveränderliche Versionen gespeichert; Korrekturen erzeugen Folgeverionen. Archiv- und Exportpakete enthalten Dokument, Metadaten, Freigabenachweise und zugehörige Audit-Ereignisse.
+## Datenmodell
 
-Elektronische Freigabe in der Anwendung wird als interner Freigabenachweis umgesetzt. Eine Signatur-Adapter-Schnittstelle ermöglicht bei Bedarf die Integration eines qualifizierten Vertrauensdiensteanbieters (QTSP) für fortgeschrittene oder qualifizierte elektronische Signaturen sowie Zeitstempel. Signaturvalidierung und langfristige Prüfbarkeit müssen berücksichtigt werden. Die Anwendung darf eine einfache interne Freigabe nicht als qualifizierte elektronische Signatur ausweisen.
+Das fachliche und relationale Zielmodell ist in [Datenmodell.md](Datenmodell.md) beschrieben. Grundprinzipien:
 
-## Gültigkeitslenkung und Verteilung
-DocumentRegister/DocumentMaster verwaltet Dokumentenstamm, Klassifikation, Eigentümer, Systembereich, Gültigkeitszeitraum, Prüffrist, Aufbewahrungsregel und Status. DistributionRule ordnet gültige Versionen Zielgruppen, Rollen, Standorten und Organisationseinheiten zu. Mitarbeiterzugriffe führen grundsätzlich auf die aktuelle gültige Version; abgelöste Versionen werden aus der Standardansicht entfernt und nur mit Berechtigung im Archiv angezeigt.
-
-Acknowledgement/TrainingRecord bindet Kenntnisnahme oder Unterweisung an Person, konkrete Dokumentversion, Zeitpunkt, Ergebnis und ggf. Wirksamkeitsnachweis. ExternalDocument verwaltet externe Quelle, Herausgeber, Ausgabestand, Abruf-/Prüfdatum, Verantwortlichen und betroffene Prozesse. ReviewTask steuert turnusmäßige und anlassbezogene Prüfungen mit Fälligkeit, Eskalation und dokumentierter Entscheidung. WithdrawalRecord protokolliert Außerkraftsetzung, Grund, Nachfolger und betroffene Verteilungskreise.
+- Stammdatensätze und versionierte Inhalte werden getrennt gespeichert.
+- Freigegebene Prozess- und Dokumentversionen sind unveränderlich. Jede Änderung erzeugt eine neue Version.
+- Dokumente und Prozesse sind über explizite n:m-Zuordnungen verknüpft; Dokumente können zusätzlich einzelnen Prozessschritten zugeordnet werden.
+- Systembereich, Standort, Organisationseinheit und Gültigkeit sind eigenständige fachliche Attribute.
+- Freigaben beziehen sich immer auf eine konkrete, unveränderliche Version.
+- Audit-Ereignisse werden append-only und getrennt geschützt gespeichert.
+- Benutzerrechte werden serverseitig geprüft; die Oberfläche ist keine Sicherheitsgrenze.
 
 ## Prozessmodell
-Ein Prozess besitzt Stammdaten, Verantwortlichkeit, Beschreibung, Status und Version. Der Ablauf besteht aus Knoten und gerichteten Kanten. Knoten haben Typ, Position und fachliche Daten. Turtle-Felder referenzieren denselben Prozessdatensatz.
+
+Ein Prozess besitzt Stammdaten, Verantwortlichkeit, Beschreibung, Systembereichszuordnung und Status. Prozessversionen enthalten den freizugebenden fachlichen Stand. Der Ablauf besteht aus geordneten Knoten und gerichteten Kanten. Turtle-Felder, Risiken, Chancen, Kennzahlen und Dokumentverknüpfungen referenzieren dieselbe Prozessversion. Prozessdesigner, Turtle und Mitarbeiteransicht dürfen keine voneinander abweichenden Kopien der Prozessdaten führen.
+
+## Dokumentenlenkung und Workflow
+
+DokumentMaster verwaltet Identität, Dokumentart, Eigentümer, Systembereich und Grunddaten. DocumentVersion enthält den konkreten unveränderlichen Inhalt und dessen Metadaten. Ein konfigurierbarer Workflow steuert Entwurf, Fachprüfung, Systemprüfung, Freigabe, Veröffentlichung, Wiedervorlage, Revision, Rückzug und Archivierung. Rückweisung, Kommentare, Stellvertretung, Fristen, Erinnerungen, Eskalationen und ein gesonderter Notfallworkflow sind vorzusehen.
+
+Die serverseitige Geschäftslogik erzwingt Funktionstrennung und Berechtigungen. Jede Freigabe referenziert eine konkrete DocumentVersion und speichert authentifizierte Identität, Authentifizierungsstärke, aktive Freigabeabsicht, Zeitstempel und Ergebnis.
+
+## Audit, Integrität und elektronische Freigabe
+
+AuditEvent wird append-only gespeichert. Ereignisse enthalten Akteur, Aktion, Objekt-ID, Versions-ID, Zeitstempel mit Zeitzonenbezug, Ergebnis, Änderungsgrund und Korrelations-ID. Integritätsschutz umfasst restriktive Administration, getrennte Speicherung, kryptografische Integritätsnachweise, regelmäßige Prüfungen und protokollierte Restore-Tests. Eine Hash-Verkettung allein begründet keine rechtliche oder technische Revisionssicherheit.
+
+Freigegebene Inhalte werden als unveränderliche Versionen gespeichert; Korrekturen erzeugen Folgever­sionen. Archiv- und Exportpakete enthalten Dokument, Metadaten, Freigabenachweise und zugehörige Audit-Ereignisse.
+
+Die elektronische Freigabe in der Anwendung ist zunächst ein interner Freigabenachweis. Eine Signatur-Adapter-Schnittstelle ermöglicht optional die Integration eines qualifizierten Vertrauensdiensteanbieters (QTSP) für fortgeschrittene oder qualifizierte elektronische Signaturen sowie Zeitstempel. Signaturvalidierung und langfristige Prüfbarkeit sind zu berücksichtigen. Eine interne Klickfreigabe darf nicht als qualifizierte elektronische Signatur bezeichnet werden.
+
+## Gültigkeitslenkung und Verteilung
+
+DistributionRule ordnet gültige Versionen Zielgruppen, Rollen, Standorten und Organisationseinheiten zu. Mitarbeiterzugriffe führen grundsätzlich auf die aktuelle gültige Version; abgelöste Versionen werden aus der Standardansicht entfernt und nur berechtigt im Archiv angezeigt. Kenntnisnahme und Unterweisung werden an Person und konkrete Dokumentversion gebunden. Externe Dokumente enthalten Quelle, Herausgeber, Ausgabestand, Prüfdatum, Verantwortlichen und betroffene Prozesse. ReviewTask steuert turnusmäßige und anlassbezogene Prüfungen. WithdrawalRecord protokolliert Außerkraftsetzung, Grund, Nachfolger und betroffene Verteilungskreise.
 
 ## Sicherheit und Governance
-Produktivdaten gehören nicht in Git. Geheimnisse werden ausschließlich über sichere Umgebungsvariablen/Secret Stores verwaltet. Rollen- und Freigaberechte müssen serverseitig geprüft werden. Audit-Ereignisse sind unveränderbar zu protokollieren.
+
+Produktivdaten gehören nicht in GitHub. Geheimnisse werden ausschließlich über Secret Stores bzw. sichere Umgebungsvariablen verwaltet. Rollen- und Freigaberechte werden serverseitig geprüft. Mandanten-/Organisationsgrenzen, Protokollzugriffe und administrative Sonderrechte sind ausdrücklich zu testen. Backup und Wiederherstellung umfassen Datenbank, Dokumentdateien, Versionen und Auditdaten.
 
 ## Aktueller Implementierungsumfang
+
 - React/Vite/TypeScript-Grundgerüst
 - Visueller Editor mit Beispielprozess, Knotenbearbeitung und Verbindungen
-- Prozessstammdaten in der Oberfläche
-- Turtle-Ansicht mit ausdrücklich als Platzhalter markierten Feldern
-- Light-/Dark-Modus (aktuell lokale Browserpräferenz)
-- Navigation für Cockpit und Dokumente als Prototypseiten
+- Prozessstammdaten und Turtle-Beispielinhalte im lokalen UI-Zustand
+- Light-/Dark-Modus (lokale Browserpräferenz)
+- Cockpit- und Dokumentenlenkungs-Navigationsseiten als Prototyp
 
 ## Nicht implementiert
-Backend, PostgreSQL, Authentifizierung, Mehrbenutzerbetrieb, zentrale Speicherung, Freigabe-Workflow, Audit-Trail, produktive Turtle-Datenpflege, produktive Dokumentenerstellung/-lenkung, KI-Änderungsanalyse, Export und automatisierte Tests.
+
+Backend, PostgreSQL, Authentifizierung, Mehrbenutzerbetrieb, zentrale Speicherung, produktive Prozessversionierung, produktive Turtle-Datenpflege, Dokumentenerstellung/-lenkung, Freigabe-Workflow, Audit-Trail, Signaturintegration, Verteilung, Kenntnisnahme, KI-Änderungsanalyse, Export und automatisierte Tests.
 
 ## Architekturentscheidungen mit Prüfbedarf
+
 - React Flow Lizenzbedingungen für den konkreten Einsatz prüfen
-- Hosting und Backupkonzept mit IT/Datenschutz abstimmen
-- Datenmodell und API vor produktiver Nutzung spezifizieren
+- Hosting, Datenschutz, Informationssicherheit und Backupkonzept mit F&R abstimmen
+- Dateispeicher und Schlüsselverwaltung festlegen
+- Rollen- und Freigabematrix fachlich freigeben
+- Aufbewahrungs- und Löschregeln definieren
 - BPMN 2.0 Import/Export als spätere Interoperabilitätsoption bewerten
