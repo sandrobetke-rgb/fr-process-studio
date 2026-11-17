@@ -23,6 +23,17 @@ Nachweisen, dass Funktionen fachlich korrekt, nachvollziehbar und mit den festge
 6. Ablösung, Prüfdatum, Änderungsgrund und Historie sind nachvollziehbar.
 7. PDF-Ausgabe enthält Dokumenten-ID, Version, Status und F&R-Kennzeichnung.
 
+## Zusätzliche Workflow-, Audit- und Signaturtests
+1. Workflow erzwingt die konfigurierte Reihenfolge und Zuständigkeiten.
+2. Ersteller können ihre eigenen Dokumente nicht unzulässig selbst freigeben.
+3. Rückweisung, Kommentar, Wiedervorlage, Vertretung und Eskalation werden korrekt protokolliert.
+4. Jede Freigabe ist eindeutig einer authentifizierten Person und einer bestimmten Dokumentversion zugeordnet.
+5. Nachträgliche Änderungen an freigegebenen Dateien oder Audit-Ereignissen werden erkannt bzw. verhindert.
+6. Hash-/Integritätsprüfung erkennt manipulierte Archivobjekte.
+7. Audit- und Freigabenachweise lassen sich vollständig exportieren und einer Dokumentversion zuordnen.
+8. Signatur-Adapter validiert Signaturstatus und Zertifikatskette, sofern ein QTSP angebunden ist.
+9. Backup und Wiederherstellung erhalten Dokumente, Versionen, Workflow- und Auditdaten.
+
 ## Spätere automatisierte Tests
 - Unit-Tests für Prozessmodell und Validierungsregeln
 - API- und Berechtigungstests
@@ -31,4 +42,4 @@ Nachweisen, dass Funktionen fachlich korrekt, nachvollziehbar und mit den festge
 - End-to-End-Tests für zentrale Nutzerabläufe
 
 ## Abnahmeregel
-Ein Prototyp-Test ist keine Freigabe für den produktiven IMS-Einsatz. Produktivsetzung erst nach Sicherheits-, Datenschutz-, Rollen-, Backup- und Fachprüfung.
+Ein Prototyp-Test ist keine Freigabe für den produktiven IMS-Einsatz. Produktivsetzung erst nach Sicherheits-, Datenschutz-, Rollen-, Backup-, Workflow-, Audit- und Signaturprüfung. Revisionssicherheit ist durch dokumentierte Abnahmetests und eine fachliche/rechtliche Bewertung nachzuweisen.
