@@ -1,7 +1,7 @@
 # Lastenheft – F&R Process Studio
 
 **Dokument-ID:** LF-FRPS-001  
-**Version:** 0.7  
+**Version:** 0.8  
 **Stand:** 17.11.2026  
 **Status:** Arbeitsstand – UI-Entwicklung
 
@@ -54,19 +54,34 @@ IATF 16949 bildet den normativen Rahmen des führenden Managementsystems. Umwelt
 ### 4.8 Änderungsmanagement
 Änderungswünsche in natürlicher Sprache erfassen. Auf Anfrage das Änderungsprotokoll mit offenen und abgeschlossenen Änderungen anzeigen. Eine KI darf betroffene Prozesse, Dokumente, Rollen, Kennzahlen, Risiken und Normzuordnungen analysieren und Änderungsvorschläge erstellen. Keine automatische Änderung oder Freigabe bereits genehmigter Inhalte. Jede Änderung benötigt menschliche Prüfung und Freigabe.
 
-### 4.9 Versionierung und Freigaben
+
+
+### 4.9 Revisionssicherheit, Workflow und elektronische Freigabe/Signatur
+Die Dokumentenlenkung muss eine nachvollziehbare, gegen unbemerkte nachträgliche Veränderung geschützte Dokumenten- und Freigabehistorie gewährleisten. Der Begriff „revisionssicher“ ist als überprüfbares Schutzziel umzusetzen; die tatsächliche Eignung ist vor Produktivsetzung anhand der F&R-Anforderungen, Aufbewahrungsregeln und rechtlichen Vorgaben zu validieren.
+
+Der Workflow muss konfigurierbar sein und mindestens folgende Schritte unterstützen: Entwurf/Erstellung → fachliche Prüfung → Qualitäts-/Systemprüfung (falls erforderlich) → Freigabe → Veröffentlichung → regelmäßige oder anlassbezogene Überprüfung → Änderung/Ablösung/Archivierung. Rückweisung mit Kommentar, erneute Einreichung, Stellvertretung, Eskalation und Erinnerungen bei Fristüberschreitung sind vorzusehen. Rollen und Verantwortlichkeiten müssen je Dokumentart und Systembereich konfigurierbar sein. Funktionstrennung ist sicherzustellen: Ersteller dürfen ihre eigenen Dokumente nicht allein freigeben, sofern keine ausdrücklich genehmigte Ausnahme-Regel existiert.
+
+Jede Freigabe muss eindeutig einer authentifizierten Person, der konkreten unveränderlichen Dokumentversion und einem Zeitstempel zugeordnet sein. Vor Freigabe müssen Dokument-ID, Titel, Version und Änderungsstand sichtbar sein. Die freigebende Person muss ihre Freigabeabsicht aktiv bestätigen; für risikorelevante Freigaben ist eine erneute Authentifizierung (z. B. MFA) vorzusehen. Freigabeprotokoll und Signaturinformationen müssen zusammen mit der freigegebenen Version exportierbar und langfristig prüfbar sein.
+
+Das Audit-Trail muss mindestens Erstellen, Anzeigen/Herunterladen soweit relevant, Bearbeiten, Einreichen, Prüfen, Kommentieren, Zurückweisen, Freigeben, Veröffentlichen, Ablösen, Archivieren, Berechtigungsänderungen und fehlgeschlagene Freigabeversuche protokollieren. Einträge enthalten handelnde Identität, Aktion, Objekt und Version, Datum/Uhrzeit mit Zeitzonenbezug, Ergebnis sowie bei Änderungen den Grund. Protokolle dürfen durch normale Benutzer und Administratoren nicht unbemerkt verändert oder gelöscht werden. Technische Maßnahmen wie append-only Speicherung, Hash-Prüfungen/Verkettung, restriktive Administration und regelmäßige Integritätsprüfungen sind vorzusehen.
+
+Freigegebene Dokumentdateien und Metadaten müssen unveränderlich versioniert werden. Jede Änderung erzeugt eine neue Version; die alte freigegebene Fassung bleibt mit ihrem Freigabenachweis erhalten. Integritätsprüfungen, revisionsfähige Exporte, Aufbewahrungs- und Löschregeln, Backups und regelmäßig getestete Wiederherstellung sind verpflichtend zu spezifizieren. Ein Archiv muss Dokumente einschließlich Metadaten, Freigaben und Auditnachweisen auch nach Benutzerwechseln oder Systemmigration lesbar und prüfbar halten.
+
+Die Anwendung muss mindestens eine interne elektronische Freigabe mit belastbarem Nachweis unterstützen. Zusätzlich ist eine optionale Anbindung an einen qualifizierten Vertrauensdiensteanbieter für fortgeschrittene oder qualifizierte elektronische Signaturen vorzusehen. Die Signaturstufe ist je Dokumentart/Anwendungsfall festlegbar. Eine interne Klickfreigabe darf nicht als qualifizierte elektronische Signatur bezeichnet werden. Auswahl des Signaturverfahrens und rechtliche Eignung sind vor Einsatz mit F&R zu validieren.
+
+### 4.10 Versionierung und Freigaben
 Version, Änderungsgrund, Ersteller, Prüfer, Freigeber, Zeitstempel und Status dokumentieren. Frühere freigegebene Versionen nachvollziehbar aufbewahren.
 
-### 4.10 Export
+### 4.11 Export
 Prozessdarstellungen und freigegebene Dokumente mindestens als PDF sowie geeignete Bild-/Vektorformate exportieren. Export mit Dokumentenkennung, Versionsstand und Status; eigene Vorlagen mit „© splash Syncworks“.
 
-### 4.11 Benutzer- und Rechteverwaltung
+### 4.12 Benutzer- und Rechteverwaltung
 Rollenbasierte Rechte. Mitarbeiter standardmäßig lesend auf freigegebene Inhalte; Bearbeitung, Prüfung und Freigabe getrennt berechtigen.
 
-### 4.12 Themes
+### 4.13 Themes
 Light- und Dark-Modus für alle Module, je Benutzer speicherbar. Lesbarkeit und Kontrast in beiden Modi sicherstellen. Druckansicht gesondert optimieren.
 
-### 4.13 Management-Cockpit
+### 4.14 Management-Cockpit
 Prozessstatus, offene Änderungen, überfällige Prüfungen, fehlende Kennzahlen, Dokumentenstatus und offene Maßnahmen darstellen.
 
 ## 5. Nichtfunktionale Anforderungen
@@ -91,7 +106,9 @@ Keine automatische Zertifizierung, keine autonome KI-Freigabe und kein Ersatz f�
 2. Turtle und Prozesssteckbrief basieren auf denselben Prozessdaten.
 3. Dokumente der definierten Dokumentarten können erstellt, versioniert und Prozessen sowie Prozessschritten zugeordnet werden.
 4. Dokumente durchlaufen einen geregelten Prüf- und Freigabeprozess; historische Versionen bleiben nachvollziehbar.
-3. Mitarbeiter können freigegebene Prozesse ohne Bearbeitungsrechte lesen.
+5. Jede Freigabe ist einer Person und exakt einer Dokumentversion zugeordnet und mit Zeitstempel und Auditnachweis exportierbar.
+6. Normale Benutzer können freigegebene Fassungen und Auditprotokolle nicht unbemerkt verändern oder löschen.
+7. Mitarbeiter können freigegebene Prozesse ohne Bearbeitungsrechte lesen.
 4. Änderungen können erfasst, analysiert, geprüft und freigegeben werden.
 5. Frühere Versionen bleiben nachvollziehbar.
 6. Light-/Dark-Modus bleibt je Benutzer gespeichert.
