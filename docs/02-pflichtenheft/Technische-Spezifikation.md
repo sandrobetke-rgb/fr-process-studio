@@ -1,6 +1,6 @@
 # Technische Spezifikation – F&R Process Studio
 
-**Version:** 0.3 · **Stand:** 17.11.2026 · **Status:** Architekturvorschlag
+**Version:** 0.4 · **Stand:** 17.11.2026 · **Status:** Architekturvorschlag
 
 ## Zielbild
 Browserbasierte, modular aufgebaute Webanwendung. Das Frontend ist ein React-/TypeScript-Projekt mit Vite. Die grafische Modellierung basiert auf @xyflow/react (React Flow). Die erste Version ist ein UI-Prototyp; zentrale Speicherung und Backend folgen.
@@ -15,6 +15,13 @@ Browserbasierte, modular aufgebaute Webanwendung. Das Frontend ist ein React-/Ty
 
 ## Fachliche Systemstruktur\nZwei getrennte Systembereiche werden modelliert: IATF 16949 als eigenständiges Qualitätsmanagementsystem sowie ein integrierter Managementsystembereich für Umwelt (ISO 14001), Energie (ISO 50001) und Arbeitsschutzprozesse angelehnt an ISO 45001. Prozesse dürfen mehrere Bereiche berühren; Systemzuordnung und Nachweisführung bleiben explizit. Die ISO-45001-Anlehnung ist nicht als Zertifizierungsstatus abzubilden.\n\n## Datenmodell – erste fachliche Entitäten
 Process, ProcessVersion, ProcessNode, ProcessEdge, TurtleField, Document, NormReference, Role, User, ChangeRequest, ChangeImpact, Approval, AuditEvent, KPI, Risk, Opportunity.
+
+## Workflow, Freigabe und Revisionssicherheit
+Workflow-Engine mit konfigurierbaren Statusübergängen, Aufgaben, Rollen, Stellvertretungen, Fristen, Erinnerungen, Eskalationen, Rückweisungen und Kommentaren. Server erzwingt Funktionstrennung und Berechtigungen. Jede Freigabe referenziert eine immutable DocumentVersion und speichert Benutzeridentität, Authentifizierungsstärke, Freigabeabsicht, Zeitstempel und Ergebnis.
+
+AuditEvent wird append-only gespeichert. Ereignisse enthalten Akteur, Aktion, Objekt-ID, Versions-ID, Zeitstempel, Ergebnis, Änderungsgrund und Korrelations-ID. Manipulationserkennung durch kryptografische Hashes/Hash-Verkettung und regelmäßige Integritätsprüfung; Protokolle in getrennt geschütztem Speicher. Hash-Verkettung allein ist keine absolute Revisionssicherheitsgarantie. Freigegebene Inhalte werden als unveränderliche Versionen gespeichert; Korrekturen erzeugen Folgeverionen. Archiv- und Exportpakete enthalten Dokument, Metadaten, Freigabenachweise und zugehörige Audit-Ereignisse.
+
+Elektronische Freigabe in der Anwendung wird als interner Freigabenachweis umgesetzt. Eine Signatur-Adapter-Schnittstelle ermöglicht bei Bedarf die Integration eines qualifizierten Vertrauensdiensteanbieters (QTSP) für fortgeschrittene oder qualifizierte elektronische Signaturen sowie Zeitstempel. Signaturvalidierung und langfristige Prüfbarkeit müssen berücksichtigt werden. Die Anwendung darf eine einfache interne Freigabe nicht als qualifizierte elektronische Signatur ausweisen.
 
 ## Prozessmodell
 Ein Prozess besitzt Stammdaten, Verantwortlichkeit, Beschreibung, Status und Version. Der Ablauf besteht aus Knoten und gerichteten Kanten. Knoten haben Typ, Position und fachliche Daten. Turtle-Felder referenzieren denselben Prozessdatensatz.
