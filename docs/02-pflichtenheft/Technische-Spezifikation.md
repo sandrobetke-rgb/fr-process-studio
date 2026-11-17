@@ -1,6 +1,6 @@
 # Technische Spezifikation – F&R Process Studio
 
-**Version:** 0.1 · **Stand:** 17.11.2026 · **Status:** Architekturvorschlag
+**Version:** 0.2 · **Stand:** 17.11.2026 · **Status:** Architekturvorschlag
 
 ## Zielbild
 Browserbasierte, modular aufgebaute Webanwendung. Das Frontend ist ein React-/TypeScript-Projekt mit Vite. Die grafische Modellierung basiert auf @xyflow/react (React Flow). Die erste Version ist ein UI-Prototyp; zentrale Speicherung und Backend folgen.
@@ -13,7 +13,7 @@ Browserbasierte, modular aufgebaute Webanwendung. Das Frontend ist ein React-/Ty
 - CI (geplant): GitHub Actions für Build und Tests
 - KI (später): austauschbare Schnittstelle; keine automatische Freigabe
 
-## Datenmodell – erste fachliche Entitäten
+## Fachliche Systemstruktur\nZwei getrennte Systembereiche werden modelliert: IATF 16949 als eigenständiges Qualitätsmanagementsystem sowie ein integrierter Managementsystembereich für Umwelt (ISO 14001), Energie (ISO 50001) und Arbeitsschutzprozesse angelehnt an ISO 45001. Prozesse dürfen mehrere Bereiche berühren; Systemzuordnung und Nachweisführung bleiben explizit. Die ISO-45001-Anlehnung ist nicht als Zertifizierungsstatus abzubilden.\n\n## Datenmodell – erste fachliche Entitäten
 Process, ProcessVersion, ProcessNode, ProcessEdge, TurtleField, Document, NormReference, Role, User, ChangeRequest, ChangeImpact, Approval, AuditEvent, KPI, Risk, Opportunity.
 
 ## Prozessmodell
