@@ -14,7 +14,11 @@
 | LF-010 | PDF-/Bildexport mit Dokumentenmetadaten | Soll | Geplant |
 | LF-011 | Management-Cockpit | Soll | UI-Prototyp begonnen |
 | LF-012 | Light-/Dark-Modus, nutzerbezogene Präferenz | Muss | Lokal im Browser umgesetzt; Benutzerprofil offen |
-| LF-013 | © splash Syncworks auf allen Seiten und eigenen Exporten | Muss | UI umgesetzt; Export offen |\n| LF-014 | Gesteuerte Erstellung und Verwaltung von VA, AA, Prozessbeschreibungen, Prüfplänen, Formblättern, Checklisten und Betriebsanweisungen | Muss | Geplant |\n| LF-015 | Dokumente Prozessen und einzelnen Prozessschritten zuordnen; Mehrfachzuordnungen unterstützen | Muss | Geplant |\n| LF-016 | Dokumentenversionen, Prüfung, Freigabe, Veröffentlichung, Prüfintervalle und historische Ablage | Muss | Geplant |\n| LF-017 | F&R-Dokumentvorlagen, Anlagen/Medien und PDF-Ausgabe mit Dokumentenmetadaten | Soll | Geplant |
+| LF-013 | © splash Syncworks auf allen Seiten und eigenen Exporten | Muss | UI umgesetzt; Export offen |
+| LF-014 | Gesteuerte Erstellung und Verwaltung von VA, AA, Prozessbeschreibungen, Prüfplänen, Formblättern, Checklisten und Betriebsanweisungen | Muss | Geplant |
+| LF-015 | Dokumente Prozessen und einzelnen Prozessschritten zuordnen; Mehrfachzuordnungen unterstützen | Muss | Geplant |
+| LF-016 | Dokumentenversionen, Prüfung, Freigabe, Veröffentlichung, Prüfintervalle und historische Ablage | Muss | Geplant |
+| LF-017 | F&R-Dokumentvorlagen, Anlagen/Medien und PDF-Ausgabe mit Dokumentenmetadaten | Soll | Geplant |
 | LF-018 | Konfigurierbarer Dokumentenworkflow mit Prüfung, Rückweisung, Freigabe, Veröffentlichung, Wiedervorlage und Eskalation | Muss | Geplant |
 | LF-019 | Revisionsfähiger Audit-Trail mit Identität, Zeitstempel, Aktion, Dokumentversion, Änderungsgrund und Integritätsprüfung | Muss | Geplant |
 | LF-020 | Elektronische Freigabe mit aktiver Bestätigung, Re-Authentifizierung/MFA-Option und exportierbarem Freigabenachweis | Muss | Geplant |
