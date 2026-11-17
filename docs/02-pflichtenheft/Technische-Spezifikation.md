@@ -1,6 +1,6 @@
 # Technische Spezifikation – F&R Process Studio
 
-**Version:** 0.4 · **Stand:** 17.11.2026 · **Status:** Architekturvorschlag
+**Version:** 0.5 · **Stand:** 17.11.2026 · **Status:** Architekturvorschlag
 
 ## Zielbild
 Browserbasierte, modular aufgebaute Webanwendung. Das Frontend ist ein React-/TypeScript-Projekt mit Vite. Die grafische Modellierung basiert auf @xyflow/react (React Flow). Die erste Version ist ein UI-Prototyp; zentrale Speicherung und Backend folgen.
@@ -22,6 +22,11 @@ Workflow-Engine mit konfigurierbaren Statusübergängen, Aufgaben, Rollen, Stell
 AuditEvent wird append-only gespeichert. Ereignisse enthalten Akteur, Aktion, Objekt-ID, Versions-ID, Zeitstempel, Ergebnis, Änderungsgrund und Korrelations-ID. Manipulationserkennung durch kryptografische Hashes/Hash-Verkettung und regelmäßige Integritätsprüfung; Protokolle in getrennt geschütztem Speicher. Hash-Verkettung allein ist keine absolute Revisionssicherheitsgarantie. Freigegebene Inhalte werden als unveränderliche Versionen gespeichert; Korrekturen erzeugen Folgeverionen. Archiv- und Exportpakete enthalten Dokument, Metadaten, Freigabenachweise und zugehörige Audit-Ereignisse.
 
 Elektronische Freigabe in der Anwendung wird als interner Freigabenachweis umgesetzt. Eine Signatur-Adapter-Schnittstelle ermöglicht bei Bedarf die Integration eines qualifizierten Vertrauensdiensteanbieters (QTSP) für fortgeschrittene oder qualifizierte elektronische Signaturen sowie Zeitstempel. Signaturvalidierung und langfristige Prüfbarkeit müssen berücksichtigt werden. Die Anwendung darf eine einfache interne Freigabe nicht als qualifizierte elektronische Signatur ausweisen.
+
+## Gültigkeitslenkung und Verteilung
+DocumentRegister/DocumentMaster verwaltet Dokumentenstamm, Klassifikation, Eigentümer, Systembereich, Gültigkeitszeitraum, Prüffrist, Aufbewahrungsregel und Status. DistributionRule ordnet gültige Versionen Zielgruppen, Rollen, Standorten und Organisationseinheiten zu. Mitarbeiterzugriffe führen grundsätzlich auf die aktuelle gültige Version; abgelöste Versionen werden aus der Standardansicht entfernt und nur mit Berechtigung im Archiv angezeigt.
+
+Acknowledgement/TrainingRecord bindet Kenntnisnahme oder Unterweisung an Person, konkrete Dokumentversion, Zeitpunkt, Ergebnis und ggf. Wirksamkeitsnachweis. ExternalDocument verwaltet externe Quelle, Herausgeber, Ausgabestand, Abruf-/Prüfdatum, Verantwortlichen und betroffene Prozesse. ReviewTask steuert turnusmäßige und anlassbezogene Prüfungen mit Fälligkeit, Eskalation und dokumentierter Entscheidung. WithdrawalRecord protokolliert Außerkraftsetzung, Grund, Nachfolger und betroffene Verteilungskreise.
 
 ## Prozessmodell
 Ein Prozess besitzt Stammdaten, Verantwortlichkeit, Beschreibung, Status und Version. Der Ablauf besteht aus Knoten und gerichteten Kanten. Knoten haben Typ, Position und fachliche Daten. Turtle-Felder referenzieren denselben Prozessdatensatz.
