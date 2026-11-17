@@ -130,3 +130,46 @@ def test_document_revision_requires_reason_and_existing_document():
         json={"content": {}, "change_reason": "x"},
     )
     assert invalid.status_code == 422
+
+
+def test_process_system_area_is_saved():
+    payload = {
+        "process_number": "IMS-001",
+        "name": "Energiemanagement",
+        "system_area_code": "IMS_ENV_ENERGY_OHS",
+    }
+    response = client.post("/api/processes", json=payload)
+    assert response.status_code == 201
+    assert response.json()["system_area_code"] == "IMS_ENV_ENERGY_OHS"
+
+
+def test_document_can_be_linked_to_process_and_step():
+    process = client.post("/api/processes", json={
+        "process_number": "LINK-P-001",
+        "name": "Fertigungsprozess",
+        "system_area_code": "IATF_QM",
+    }).json()
+    document = client.post("/api/documents", json={
+        "document_number": "LINK-AA-001",
+        "title": "Arbeitsanweisung Fertigung",
+        "document_type_code": "AA",
+        "system_area_code": "IATF_QM",
+        "content": {"body": "Anweisung"},
+    }).json()
+
+    linked = client.post(
+        f"/api/documents/{document['id']}/process-links",
+        json={"process_id": process["id"], "process_step_id": "step-press-01"},
+    )
+    assert linked.status_code == 201
+    assert linked.json()["process_step_id"] == "step-press-01"
+
+    listed = client.get(f"/api/documents/{document['id']}/process-links")
+    assert listed.status_code == 200
+    assert len(listed.json()) == 1
+
+    duplicate = client.post(
+        f"/api/documents/{document['id']}/process-links",
+        json={"process_id": process["id"], "process_step_id": "step-press-01"},
+    )
+    assert duplicate.status_code == 409
