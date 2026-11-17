@@ -1,150 +1,66 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  ReactFlow, Background, Controls, MiniMap, addEdge, applyEdgeChanges,
-  applyNodeChanges, Handle, Position, type Node, type Edge, type Connection,
-  type NodeProps, type NodeChange, type EdgeChange
-} from '@xyflow/react';
-import {
-  Moon, Sun, Plus, LayoutDashboard, Workflow, FileText, Settings, Users,
-  ShieldCheck, ArrowDownToLine, CircleHelp, ChevronRight, Gauge,
-  Boxes, UserRound, ClipboardList, Target, AlertTriangle, PackageCheck
-} from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { LayoutDashboard, Workflow, FileText, ShieldCheck, Settings, Users, Plus, Search, Sun, Moon, ChevronRight, ClipboardList, Gauge, Boxes, AlertTriangle, Target, X, Save, Archive, Eye, Download, Link2, CheckCircle2, Clock3, FilePlus2, Building2 } from 'lucide-react';
 
-type ProcessData = { label: string; role: string; detail: string; kind: 'start' | 'task' | 'decision' | 'end' };
-type TurtleField = { title: string; subtitle: string; content: string; icon: string };
-function ProcessNode({ data }: NodeProps<Node<ProcessData>>) {
-  return <div className={`process-node node-${data.kind}`}>
-    {data.kind !== 'start' && <Handle type="target" position={Position.Left} />}
-    <small>{data.kind === 'task' ? 'PROZESSSCHRITT' : data.kind === 'decision' ? 'ENTSCHEIDUNG' : data.kind === 'start' ? 'START' : 'ABSCHLUSS'}</small>
-    <strong>{data.label}</strong>
-    <span>{data.role || 'Rolle offen'}</span>
-    {data.detail && <p>{data.detail}</p>}
-    {data.kind !== 'end' && <Handle type="source" position={Position.Right} />}
-  </div>;
-}
-const nodeTypes = { process: ProcessNode };
-const initialNodes: Node<ProcessData>[] = [
-  { id: 'n1', type: 'process', position: { x: 80, y: 160 }, data: { label: 'Start', role: 'Anforderung liegt vor', detail: '', kind: 'start' } },
-  { id: 'n2', type: 'process', position: { x: 330, y: 160 }, data: { label: 'Anforderung prüfen', role: 'Prozessverantwortlicher', detail: 'Eingang und Vollständigkeit prüfen', kind: 'task' } },
-  { id: 'n3', type: 'process', position: { x: 620, y: 160 }, data: { label: 'Freigabe erteilen', role: 'Führungskraft', detail: 'Entscheidung dokumentieren', kind: 'decision' } },
-  { id: 'n4', type: 'process', position: { x: 910, y: 160 }, data: { label: 'Abschluss', role: 'Prozessverantwortlicher', detail: '', kind: 'end' } }
+type Area='IATF_QM'|'IMS_ENV_ENERGY_OHS';
+type Status='Entwurf'|'In Prüfung'|'Freigegeben'|'Überprüfung fällig'|'Zurückgezogen';
+type Doc={id:string;title:string;type:string;area:Area;owner:string;process:string;version:string;status:Status;review:string;updated:string;description:string;history:{version:string;date:string;reason:string;status:string}[]};
+type Proc={id:string;name:string;category:string;area:Area;owner:string;purpose:string;input:string;output:string;resources:string;roles:string;method:string;kpis:string;risks:string;opportunities:string};
+const KEY='frps-v2-workspace';
+const types=['VA','AA','PB','PSB','PA','PL','FB','CL','NV','BA'];
+const typeNames:Record<string,string>={VA:'Verfahrensanweisung',AA:'Arbeitsanweisung',PB:'Prozessbeschreibung',PSB:'Prozesssteckbrief',PA:'Prüfanweisung',PL:'Prüfplan',FB:'Formblatt',CL:'Checkliste',NV:'Nachweisvorlage',BA:'Betriebsanweisung'};
+const areaNames:Record<Area,string>={IATF_QM:'IATF 16949 · Qualitätsmanagement',IMS_ENV_ENERGY_OHS:'Integriertes Managementsystem · Umwelt / Energie / Arbeitsschutz'};
+const initialProcesses:Proc[]=[
+{id:'P-01',name:'Anforderungsmanagement',category:'Kernprozess',area:'IATF_QM',owner:'Leitung Vertrieb',purpose:'Kunden- und interne Anforderungen vollständig erfassen, bewerten, freigeben und übergeben.',input:'Kundenanforderung, Zeichnungen, Spezifikationen, Termin- und Qualitätsvorgaben',output:'Geprüfte Anforderung, Machbarkeitsbewertung, dokumentierte Freigabe',resources:'ERP, CAD-Daten, Prüfmittel, Arbeitsplatz, Vorlagen',roles:'Vertrieb, Entwicklung, Qualität, Produktion, Einkauf',method:'Anforderungsprüfung, Machbarkeitsbewertung, Änderungsprüfung, Freigabe',kpis:'Angebotsdurchlaufzeit, Reklamationen aus Fehlinterpretation, Änderungsquote',risks:'Unvollständige Spezifikation; verspätete Machbarkeitsbewertung; unklare Kundenänderung',opportunities:'Standardisierte Checklisten; frühe interdisziplinäre Bewertung; digitale Übergabe'},
+{id:'P-02',name:'Produktionssteuerung',category:'Kernprozess',area:'IATF_QM',owner:'Produktionsleitung',purpose:'Aufträge termingerecht und qualitätsgerecht unter Berücksichtigung von Kapazität und Material steuern.',input:'Kundenabrufe, Fertigungsaufträge, Materialverfügbarkeit',output:'Produktionsplan, Fertigungsauftrag, Rückmeldung',resources:'ERP, Maschinen, Personal, Material',roles:'Arbeitsvorbereitung, Produktion, Logistik, Qualität',method:'Kapazitätsplanung, Reihenfolgeplanung, Shopfloor-Steuerung',kpis:'Termintreue, OEE, Ausschussquote',risks:'Kapazitätsengpässe; Materialmangel; ungeplante Stillstände',opportunities:'Engpassorientierte Planung; transparente Schichtübergabe'},
+{id:'P-03',name:'Energiemanagement',category:'Unterstützungsprozess',area:'IMS_ENV_ENERGY_OHS',owner:'Energiemanagement',purpose:'Energieeinsatz überwachen, bewerten und systematisch verbessern.',input:'Energieverbrauch, Betriebszeiten, Produktionsmengen',output:'Energieleistungskennzahlen, Maßnahmen, Energieziele',resources:'Energiemessstellen, Zählerdaten, Auswertung',roles:'Energiemanagement, Instandhaltung, Produktion',method:'Energetische Bewertung, EnPI, Maßnahmenverfolgung',kpis:'kWh je Produktionseinheit, Gesamtverbrauch, Zielerreichung',risks:'Messdatenlücken; ineffiziente Grundlast; fehlende Maßnahmenwirkung',opportunities:'Lastmanagement; Abwärmenutzung; Druckluftoptimierung'},
+{id:'P-04',name:'Umweltmanagement',category:'Führungsprozess',area:'IMS_ENV_ENERGY_OHS',owner:'Umweltmanagement',purpose:'Umweltaspekte und bindende Verpflichtungen bewerten und Umweltleistung verbessern.',input:'Umweltaspekte, Rechtskataster, Verbrauchs- und Abfalldaten',output:'Umweltziele, Maßnahmen, Compliance-Bewertung',resources:'Rechtskataster, Gefahrstoffkataster, Abfalldaten',roles:'Umweltmanagement, Einkauf, Produktion, Instandhaltung',method:'Aspektbewertung, Rechtsbewertung, Maßnahmenkontrolle',kpis:'Abfallquote, Energie- und Wasserverbrauch, Compliance-Status',risks:'Nicht erkannte Rechtsänderung; unzureichende Trennung von Abfällen',opportunities:'Materialeffizienz; Kreislaufführung; Substitution'}];
+const initialDocs:Doc[]=[
+{id:'VA-IATF-001',title:'Lenkung dokumentierter Information',type:'VA',area:'IATF_QM',owner:'Qualitätsmanagement',process:'Anforderungsmanagement',version:'1.0',status:'Entwurf',review:'2027-05-17',updated:'17.11.2026',description:'Regelung zur Erstellung, Prüfung, Freigabe, Verteilung und Änderung gelenkter Dokumente.',history:[{version:'1.0',date:'17.11.2026',reason:'Erstanlage im Prototyp',status:'Entwurf'}]},
+{id:'AA-IATF-002',title:'Prüfung von Kundenanforderungen',type:'AA',area:'IATF_QM',owner:'Vertrieb',process:'Anforderungsmanagement',version:'2.1',status:'Freigegeben',review:'2027-02-01',updated:'01.08.2026',description:'Beispiel für eine freigegebene Arbeitsanweisung.',history:[{version:'2.1',date:'01.08.2026',reason:'Anpassung Prüfschritte',status:'Freigegeben'},{version:'2.0',date:'10.02.2026',reason:'Überarbeitung',status:'Abgelöst'}]},
+{id:'PB-IMS-003',title:'Energetische Bewertung',type:'PB',area:'IMS_ENV_ENERGY_OHS',owner:'Energiemanagement',process:'Energiemanagement',version:'1.2',status:'In Prüfung',review:'2027-03-01',updated:'12.11.2026',description:'Beispiel für ein IMS-Dokument zur energetischen Bewertung.',history:[{version:'1.2',date:'12.11.2026',reason:'Aktualisierung der Kennzahlen',status:'In Prüfung'}]}
 ];
-const initialEdges: Edge[] = [
-  { id: 'e1', source: 'n1', target: 'n2', animated: true },
-  { id: 'e2', source: 'n2', target: 'n3', animated: true },
-  { id: 'e3', source: 'n3', target: 'n4', animated: true }
-];
-const initialTurtle: TurtleField[] = [
-  { title: 'Womit?', subtitle: 'Ressourcen & Infrastruktur', content: 'ERP-System und digitale Auftragsdaten\nArbeitsplätze und IT-Infrastruktur\nFreigegebene Formulare und Vorlagen', icon: 'resources' },
-  { title: 'Mit wem?', subtitle: 'Rollen & Verantwortlichkeiten', content: 'Prozessverantwortlicher\nVertrieb / Kundenservice\nFachabteilungen nach Bedarf', icon: 'people' },
-  { title: 'Wie?', subtitle: 'Methoden & Vorgaben', content: 'Definierter Prüf- und Freigabeablauf\nGelenkte Verfahrens- und Arbeitsanweisungen\nDokumentierte Entscheidungskriterien', icon: 'method' },
-  { title: 'Womit messen?', subtitle: 'Kennzahlen & Wirksamkeit', content: 'Durchlaufzeit der Bearbeitung\nAnteil vollständiger Anforderungen\nAnzahl Rückfragen und Korrekturen', icon: 'measure' },
-  { title: 'Input', subtitle: 'Eingaben & Auslöser', content: 'Kunden- oder interne Anforderung\nTechnische und kaufmännische Informationen\nTermin- und Qualitätsvorgaben', icon: 'input' },
-  { title: 'Output', subtitle: 'Ergebnisse & Empfänger', content: 'Geprüfte und bewertete Anforderung\nDokumentierte Freigabeentscheidung\nInformation an nachgelagerte Prozesse', icon: 'output' }
-];
-type Tab = 'designer' | 'turtle' | 'overview' | 'documents';
-
-const DRAFT_KEY = 'frps-workspace-draft-v1';
-type WorkspaceDraft = {
-  nodes: Node<ProcessData>[];
-  edges: Edge[];
-  processName: string;
-  owner: string;
-  description: string;
-  turtleFields: TurtleField[];
-  risks: string;
-  opportunities: string;
-};
-function readDraft(): Partial<WorkspaceDraft> {
-  try {
-    const raw = localStorage.getItem(DRAFT_KEY);
-    return raw ? JSON.parse(raw) as Partial<WorkspaceDraft> : {};
-  } catch {
-    return {};
-  }
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch{return {}}}
+type Tab='cockpit'|'map'|'process'|'docs'|'approvals'|'systems';
+export default function App(){
+ const saved=load();
+ const [dark,setDark]=useState(()=>localStorage.getItem('frps-theme')!=='light');
+ const [tab,setTab]=useState<Tab>('cockpit');
+ const [docs,setDocs]=useState<Doc[]>(saved.docs||initialDocs);
+ const [processes,setProcesses]=useState<Proc[]>(saved.processes||initialProcesses);
+ const [search,setSearch]=useState('');
+ const [filterArea,setFilterArea]=useState('Alle');
+ const [filterStatus,setFilterStatus]=useState('Alle');
+ const [selectedDoc,setSelectedDoc]=useState<string|null>(null);
+ const [selectedProc,setSelectedProc]=useState('P-01');
+ const [showNew,setShowNew]=useState(false);
+ const [form,setForm]=useState({id:'',title:'',type:'VA',area:'IATF_QM' as Area,owner:'',process:'',review:'2027-05-17',description:''});
+ const [toast,setToast]=useState('');
+ useEffect(()=>{localStorage.setItem(KEY,JSON.stringify({docs,processes}));},[docs,processes]);
+ useEffect(()=>{if(!toast)return;const t=window.setTimeout(()=>setToast(''),2600);return()=>window.clearTimeout(t)},[toast]);
+ const chosen=docs.find(d=>d.id===selectedDoc);
+ const proc=processes.find(p=>p.id===selectedProc)||processes[0];
+ const filtered=useMemo(()=>docs.filter(d=>(filterArea==='Alle'||d.area===filterArea)&&(filterStatus==='Alle'||d.status===filterStatus)&&[d.id,d.title,d.owner,d.process,d.type].join(' ').toLowerCase().includes(search.toLowerCase())),[docs,filterArea,filterStatus,search]);
+ const changeDoc=(id:string,patch:Partial<Doc>)=>setDocs(ds=>ds.map(d=>d.id===id?{...d,...patch}:d));
+ const createDoc=()=>{if(!form.title.trim()||!form.id.trim()||!form.owner.trim()){setToast('Bitte Kennung, Titel und Verantwortlichen ausfüllen.');return}if(docs.some(d=>d.id===form.id)){setToast('Diese Dokumentenkennung ist bereits vergeben.');return}const d:Doc={...form,version:'0.1',status:'Entwurf',updated:new Date().toLocaleDateString('de-DE'),history:[{version:'0.1',date:new Date().toLocaleDateString('de-DE'),reason:'Neuanlage',status:'Entwurf'}]};setDocs(ds=>[d,...ds]);setShowNew(false);setSelectedDoc(d.id);setTab('docs');setToast('Dokument als Entwurf angelegt.');setForm({id:'',title:'',type:'VA',area:'IATF_QM',owner:'',process:'',review:'2027-05-17',description:''})};
+ const newVersion=(d:Doc)=>{const [maj,min]=d.version.split('.').map(Number);const v=maj+'.'+(min+1);changeDoc(d.id,{version:v,status:'Entwurf',updated:new Date().toLocaleDateString('de-DE'),history:[{version:v,date:new Date().toLocaleDateString('de-DE'),reason:'Neue Bearbeitungsfassung',status:'Entwurf'},...d.history]});setToast('Neue Entwurfsfassung '+v+' angelegt.')};
+ const setStatus=(d:Doc,status:Status)=>{changeDoc(d.id,{status,history:[{version:d.version,date:new Date().toLocaleDateString('de-DE'),reason:'Status geändert: '+status,status},...d.history]});setToast('Status aktualisiert: '+status)};
+ const nav=[{id:'cockpit' as Tab,label:'Management-Cockpit',icon:LayoutDashboard},{id:'map' as Tab,label:'Prozesslandkarte',icon:Workflow},{id:'process' as Tab,label:'Prozessmanagement',icon:Gauge},{id:'docs' as Tab,label:'Dokumentenlenkung',icon:FileText},{id:'approvals' as Tab,label:'Prüfung & Freigabe',icon:ShieldCheck},{id:'systems' as Tab,label:'Systembereiche',icon:Building2}];
+ const title=nav.find(n=>n.id===tab)?.label||'Process Studio';
+ return <div className={dark?'app dark':'app light'}>
+ <aside className="sidebar"><div className="brand"><div className="brand-mark">F&amp;R</div><div><b>Process Studio</b><small>MANAGEMENTSYSTEME</small></div></div><div className="nav-caption">ARBEITSBEREICH</div>{nav.map(n=><button key={n.id} className={'nav-item '+(tab===n.id?'active':'')} onClick={()=>setTab(n.id)}><n.icon size={18}/>{n.label}</button>)}<div className="nav-caption second">SYSTEMSTEUERUNG</div><div className="side-note"><b>IATF 16949</b><span>Eigenständiger Qualitätsbereich</span></div><div className="side-note"><b>Integriertes Management</b><span>Umwelt · Energie · Arbeitsschutz</span></div><div className="sidebar-bottom"><i/> Entwicklungsstand · lokale Daten</div></aside>
+ <main className="main"><header className="topbar"><div><span className="eyebrow">FRIEDRICHS &amp; RATH · PROCESS STUDIO</span><h1>{title}</h1></div><div className="top-actions"><span className="demo-pill">PROTOTYP · KEINE ECHTDATEN</span><button className="theme-toggle" onClick={()=>{setDark(!dark);localStorage.setItem('frps-theme',dark?'light':'dark')}}>{dark?<Sun size={16}/>:<Moon size={16}/>}<span>{dark?'Hell':'Dunkel'}</span></button></div></header>
+ <div className="contextbar"><div>Arbeitsbereich <ChevronRight size={13}/> <b>{title}</b></div><span className="draft-pill">ENTWICKLUNGSUMGEBUNG</span></div>
+ {tab==='cockpit'&&<section className="page"><div className="hero"><div><span className="eyebrow">MANAGEMENTSYSTEM-ÜBERSICHT</span><h2>Guten Tag. Willkommen im Process Studio.</h2><p>Prozesse, gelenkte Dokumente und Systemanforderungen an einem Ort strukturieren.</p></div><button className="primary-btn" onClick={()=>{setTab('docs');setShowNew(true)}}><Plus size={16}/> Dokument anlegen</button></div><div className="stats"><div className="stat"><span>Prozesse im Modell</span><b>{processes.length.toString().padStart(2,'0')}</b><small>Beispieldaten im Arbeitsbereich</small></div><div className="stat"><span>Dokumente im Register</span><b>{docs.length.toString().padStart(2,'0')}</b><small>Entwürfe und Beispieldokumente</small></div><div className="stat"><span>Zur Prüfung</span><b>{docs.filter(d=>d.status==='In Prüfung').length.toString().padStart(2,'0')}</b><small>Warten auf fachliche Prüfung</small></div><div className="stat"><span>Review fällig</span><b>{docs.filter(d=>d.status==='Überprüfung fällig').length.toString().padStart(2,'0')}</b><small>Wiedervorlage im Register</small></div></div><div className="dash-grid"><section className="panel"><div className="section-head"><div><h3>Systembereiche</h3><p>Getrennte fachliche Steuerung</p></div><button className="text-btn" onClick={()=>setTab('systems')}>Details ansehen →</button></div><div className="area-card"><div className="area-icon">QM</div><div><b>IATF 16949</b><span>Eigenständiges Qualitätsmanagementsystem</span></div><span className="area-tag">QMS</span></div><div className="area-card"><div className="area-icon green">IMS</div><div><b>Integriertes Managementsystem</b><span>ISO 14001 · ISO 50001 · Arbeitsschutz angelehnt an ISO 45001</span></div><span className="area-tag">IMS</span></div></section><section className="panel"><div className="section-head"><div><h3>Dokumentenstatus</h3><p>Übersicht des lokalen Registers</p></div><button className="text-btn" onClick={()=>setTab('docs')}>Register öffnen →</button></div>{(['Entwurf','In Prüfung','Freigegeben','Zurückgezogen'] as Status[]).map(st=><div className="status-line" key={st}><span>{st}</span><b>{docs.filter(d=>d.status===st).length}</b></div>)}</section></div><section className="panel"><div className="section-head"><div><h3>Zuletzt bearbeitete Dokumente</h3><p>Direkter Einstieg in die Dokumentenlenkung</p></div><button className="text-btn" onClick={()=>setTab('docs')}>Alle Dokumente →</button></div><DocTable docs={docs.slice(0,4)} open={d=>{setSelectedDoc(d.id);setTab('docs')}}/></section></section>}
+ {tab==='docs'&&<section className="page"><div className="hero compact"><div><span className="eyebrow">ZENTRALES DOKUMENTENREGISTER</span><h2>Dokumente verwalten</h2><p>Entwürfe, Versionen, Verantwortlichkeiten und Prozesszuordnungen im Überblick.</p></div><button className="primary-btn" onClick={()=>setShowNew(true)}><Plus size={16}/> Neues Dokument</button></div><div className="filterbar"><div className="searchbox"><Search size={16}/><input placeholder="Dokument, Kennung, Prozess suchen …" value={search} onChange={e=>setSearch(e.target.value)}/></div><select value={filterArea} onChange={e=>setFilterArea(e.target.value)}><option>Alle</option><option value="IATF_QM">IATF 16949</option><option value="IMS_ENV_ENERGY_OHS">Integriertes Management</option></select><select value={filterStatus} onChange={e=>setFilterStatus(e.target.value)}><option>Alle</option>{(['Entwurf','In Prüfung','Freigegeben','Überprüfung fällig','Zurückgezogen'] as Status[]).map(x=><option key={x}>{x}</option>)}</select></div><div className="doc-layout"><section className="panel table-panel"><div className="table-title"><b>Dokumentenregister</b><span>{filtered.length} Einträge</span></div><DocTable docs={filtered} open={d=>setSelectedDoc(d.id)}/></section>{chosen?<section className="panel detail-panel"><div className="detail-top"><div><span className="eyebrow">DOKUMENTDETAIL</span><h3>{chosen.title}</h3><span className="doc-id">{chosen.id}</span></div><button className="icon-btn" onClick={()=>setSelectedDoc(null)}><X size={17}/></button></div><div className="detail-tags"><StatusBadge status={chosen.status}/><span>Version {chosen.version}</span></div><p className="detail-desc">{chosen.description||'Keine Beschreibung hinterlegt.'}</p><dl><dt>Dokumentart</dt><dd>{typeNames[chosen.type]||chosen.type}</dd><dt>Systembereich</dt><dd>{areaNames[chosen.area]}</dd><dt>Verantwortlich</dt><dd>{chosen.owner}</dd><dt>Prozess</dt><dd>{chosen.process||'Nicht zugeordnet'}</dd><dt>Nächste Prüfung</dt><dd>{chosen.review}</dd></dl><div className="detail-actions"><button className="secondary-btn" onClick={()=>newVersion(chosen)}><FilePlus2 size={15}/> Neue Version</button><button className="secondary-btn" onClick={()=>setStatus(chosen,'In Prüfung')}><Eye size={15}/> Zur Prüfung</button><button className="secondary-btn" onClick={()=>setStatus(chosen,'Freigegeben')}><CheckCircle2 size={15}/> Freigabe (Demo)</button><button className="secondary-btn" onClick={()=>setStatus(chosen,'Zurückgezogen')}><Archive size={15}/> Zurückziehen</button></div><h4>Versionshistorie</h4><div className="history">{chosen.history.map((h,i)=><div key={i}><b>Version {h.version}</b><span>{h.date} · {h.reason}</span><StatusBadge status={h.status as Status}/></div>)}</div><p className="warning-note">Demo-Funktion: Statusänderungen werden nur lokal im Browser gespeichert. Dies ist keine rechtsverbindliche Freigabe und kein manipulationsgeschützter Auditnachweis.</p></section>:<section className="panel detail-placeholder"><FileText size={28}/><b>Dokument auswählen</b><span>Wähle links einen Eintrag, um Versionen, Zuordnungen und Status zu sehen.</span></section>}</div></section>}
+ {tab==='map'&&<section className="page"><div className="hero compact"><div><span className="eyebrow">PROZESSARCHITEKTUR</span><h2>Prozesslandkarte</h2><p>Führungs-, Kern- und Unterstützungsprozesse nach Systembereich gegliedert.</p></div><button className="primary-btn" onClick={()=>{setSelectedProc('P-01');setTab('process')}}>Prozess öffnen</button></div>{(['Führungsprozess','Kernprozess','Unterstützungsprozess'] as const).map(cat=><div className="map-group" key={cat}><div className="map-label">{cat}</div><div className="map-cards">{processes.filter(p=>p.category===cat).map(p=><button className="map-card" key={p.id} onClick={()=>{setSelectedProc(p.id);setTab('process')}}><span>{p.id}</span><b>{p.name}</b><small>{p.owner}</small><em>{p.area==='IATF_QM'?'IATF 16949':'IMS Umwelt / Energie / Arbeitsschutz'}</em></button>)}</div></div>)}</section>}
+ {tab==='process'&&<section className="page"><div className="hero compact"><div><span className="eyebrow">PROZESSSTECKBRIEF · TURTLE</span><h2>Prozessmanagement</h2><p>Ein gemeinsames Datenmodell für Prozessprofil, Turtle-Felder, Risiken und Kennzahlen.</p></div><select value={selectedProc} onChange={e=>setSelectedProc(e.target.value)}>{processes.map(p=><option key={p.id} value={p.id}>{p.id} · {p.name}</option>)}</select></div>{proc&&<><div className="process-summary"><span>{proc.id} · {proc.category}</span><h2>{proc.name}</h2><p>{proc.purpose}</p><b>{proc.owner} · {areaNames[proc.area]}</b></div><div className="turtle-grid-v2">{[['INPUT',proc.input],['OUTPUT',proc.output],['WOMIT?',proc.resources],['MIT WEM?',proc.roles],['WIE?',proc.method],['WOMIT MESSEN?',proc.kpis]].map(([k,v])=><div className="turtle-box" key={k}><b>{k}</b><p>{v}</p></div>)}</div><div className="dash-grid"><div className="panel"><h3><AlertTriangle size={16}/> Risiken</h3><p>{proc.risks}</p></div><div className="panel"><h3><Target size={16}/> Chancen</h3><p>{proc.opportunities}</p></div></div><section className="panel"><div className="section-head"><div><h3>Verknüpfte Dokumente</h3><p>Dokumente mit Zuordnung zu diesem Prozess</p></div><button className="text-btn" onClick={()=>{setTab('docs');setSearch(proc.name)}}>Dokumente verwalten →</button></div><DocTable docs={docs.filter(d=>d.process===proc.name)} open={d=>{setSelectedDoc(d.id);setTab('docs')}}/></section></>}</section>}
+ {tab==='approvals'&&<section className="page"><div className="hero compact"><div><span className="eyebrow">WORKFLOW-ÜBERSICHT</span><h2>Prüfung und Freigabe</h2><p>Arbeitsvorrat für Dokumente mit Status Entwurf oder In Prüfung.</p></div></div><div className="notice"><ShieldCheck size={18}/> Die nachfolgende Liste ist eine lokale Workflow-Simulation. Echte Benutzeridentitäten, Funktionstrennung und rechtsverbindliche Freigaben sind noch nicht angebunden.</div><div className="panel"><DocTable docs={docs.filter(d=>d.status==='In Prüfung'||d.status==='Entwurf')} open={d=>{setSelectedDoc(d.id);setTab('docs')}}/></div></section>}
+ {tab==='systems'&&<section className="page"><div className="hero compact"><div><span className="eyebrow">NORMATIVE SYSTEMARCHITEKTUR</span><h2>Systembereiche</h2><p>Getrennte Verantwortlichkeiten und eindeutige Nachweiszuordnung.</p></div></div><div className="system-detail"><div className="area-icon">QM</div><div><h2>IATF 16949</h2><p>Eigenständiger Qualitätsmanagementbereich. Prozesse, Risiken, Kennzahlen und Dokumente werden separat geführt.</p><b>{processes.filter(p=>p.area==='IATF_QM').length} Prozesse · {docs.filter(d=>d.area==='IATF_QM').length} Dokumente</b></div></div><div className="system-detail"><div className="area-icon green">IMS</div><div><h2>Integriertes Managementsystem</h2><p>Umweltmanagement ISO 14001 und Energiemanagement ISO 50001, ergänzt um Arbeitsschutzprozesse angelehnt an ISO 45001. Die Anlehnung stellt keine Zertifizierung dar.</p><b>{processes.filter(p=>p.area==='IMS_ENV_ENERGY_OHS').length} Prozesse · {docs.filter(d=>d.area==='IMS_ENV_ENERGY_OHS').length} Dokumente</b></div></div></section>}
+ <footer>© splash Syncworks <span>F&amp;R Process Studio · Prototyp 0.3 · lokale Browserdaten</span></footer>
+ </main>
+ {showNew&&<div className="modal-backdrop" onClick={()=>setShowNew(false)}><div className="modal" onClick={e=>e.stopPropagation()}><div className="modal-head"><div><span className="eyebrow">DOKUMENTENLENKUNG</span><h2>Neues Dokument anlegen</h2></div><button className="icon-btn" onClick={()=>setShowNew(false)}><X size={18}/></button></div><div className="form-grid"><label>Dokumentenkennung<input placeholder="z. B. VA-IATF-004" value={form.id} onChange={e=>setForm({...form,id:e.target.value})}/></label><label>Dokumentart<select value={form.type} onChange={e=>setForm({...form,type:e.target.value})}>{types.map(t=><option key={t} value={t}>{t} · {typeNames[t]}</option>)}</select></label><label className="wide">Titel<input placeholder="Titel des Dokuments" value={form.title} onChange={e=>setForm({...form,title:e.target.value})}/></label><label>Systembereich<select value={form.area} onChange={e=>setForm({...form,area:e.target.value as Area})}><option value="IATF_QM">IATF 16949</option><option value="IMS_ENV_ENERGY_OHS">Integriertes Managementsystem</option></select></label><label>Verantwortlich<input placeholder="Rolle / Funktion" value={form.owner} onChange={e=>setForm({...form,owner:e.target.value})}/></label><label>Prozesszuordnung<select value={form.process} onChange={e=>setForm({...form,process:e.target.value})}><option value="">Nicht zugeordnet</option>{processes.map(p=><option key={p.id}>{p.name}</option>)}</select></label><label>Nächste Prüfung<input type="date" value={form.review} onChange={e=>setForm({...form,review:e.target.value})}/></label><label className="wide">Inhaltsbeschreibung<textarea rows={3} value={form.description} onChange={e=>setForm({...form,description:e.target.value})}/></label></div><div className="modal-foot"><button className="secondary-btn" onClick={()=>setShowNew(false)}>Abbrechen</button><button className="primary-btn" onClick={createDoc}><Save size={15}/> Entwurf speichern</button></div></div></div>}
+ {toast&&<div className="toast">{toast}</div>}
+ </div>
 }
-export default function App() {
-  const [dark, setDark] = useState(() => localStorage.getItem('frps-theme') !== 'light');
-  const [tab, setTab] = useState<Tab>('designer');
-  const [nodes, setNodes] = useState(() => readDraft().nodes ?? initialNodes);
-  const [edges, setEdges] = useState(() => readDraft().edges ?? initialEdges);
-  const [selected, setSelected] = useState('n2');
-  const [processName, setProcessName] = useState(() => readDraft().processName ?? 'Anforderungsmanagement');
-  const [owner, setOwner] = useState(() => readDraft().owner ?? 'Leitung Vertrieb');
-  const [description, setDescription] = useState(() => readDraft().description ?? 'Kunden- und interne Anforderungen strukturiert erfassen, bewerten, freigeben und an die zuständigen Stellen übergeben.');
-  const [turtleFields, setTurtleFields] = useState(() => readDraft().turtleFields ?? initialTurtle);
-  const [risks, setRisks] = useState('Unvollständige oder widersprüchliche Anforderungen\nVerzögerte Prüfung und Freigabe\nInformationsverlust an Prozessschnittstellen');
-  const [opportunities, setOpportunities] = useState('Standardisierte digitale Erfassung\nWeniger Rückfragen durch Vollständigkeitsprüfung\nTransparente Übergabe an Folgeprozesse');
-  useEffect(() => {
-    const draft: WorkspaceDraft = { nodes, edges, processName, owner, description, turtleFields, risks, opportunities };
-    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); } catch { /* storage may be unavailable or full */ }
-  }, [nodes, edges, processName, owner, description, turtleFields, risks, opportunities]);
-  const activeNode = nodes.find(n => n.id === selected);
-  const onNodesChange = useCallback((changes: NodeChange<Node<ProcessData>>[]) => setNodes(ns => applyNodeChanges<Node<ProcessData>>(changes, ns)), []);
-  const onEdgesChange = useCallback((changes: EdgeChange[]) => setEdges(es => applyEdgeChanges(changes, es)), []);
-  const onConnect = useCallback((connection: Connection) => setEdges(es => addEdge({ ...connection, animated: true }, es)), []);
-  const addStep = () => {
-    const id = `step-${Date.now()}`;
-    setNodes(ns => [...ns, { id, type: 'process', position: { x: 300 + (ns.length % 3) * 240, y: 360 + Math.floor(ns.length / 3) * 130 }, data: { label: 'Neuer Prozessschritt', role: 'Rolle festlegen', detail: 'Beschreibung ergänzen', kind: 'task' } }]);
-    setSelected(id);
-  };
-  const updateSelected = (field: keyof ProcessData, value: string) => setNodes(ns => ns.map(n => n.id === selected ? { ...n, data: { ...n.data, [field]: value } } : n));
-  const setTheme = () => { const next = !dark; setDark(next); localStorage.setItem('frps-theme', next ? 'dark' : 'light'); };
-  const nav = useMemo(() => [
-    { id: 'overview' as Tab, label: 'Management-Cockpit', icon: LayoutDashboard },
-    { id: 'designer' as Tab, label: 'Prozessdesigner', icon: Workflow },
-    { id: 'turtle' as Tab, label: 'Turtle-Diagramm', icon: Gauge },
-    { id: 'documents' as Tab, label: 'Dokumentenlenkung', icon: FileText }
-  ], []);
-  const updateTurtle = (index: number, content: string) => setTurtleFields(fs => fs.map((f, i) => i === index ? { ...f, content } : f));
-  const title = tab === 'designer' ? 'Prozessdesigner' : tab === 'turtle' ? 'Turtle-Diagramm' : tab === 'overview' ? 'Management-Cockpit' : 'Dokumentenlenkung';
-  return <div className={dark ? 'app dark' : 'app light'}>
-    <aside className="sidebar">
-      <div className="brand"><div className="brand-mark">F&amp;R</div><div><b>Process Studio</b><small>IATF + INTEGRIERTES MANAGEMENT</small></div></div>
-      <div className="nav-caption">ARBEITSBEREICH</div>
-      {nav.map(item => <button key={item.id} className={tab === item.id ? 'nav-item active' : 'nav-item'} onClick={() => setTab(item.id)}><item.icon size={18}/>{item.label}</button>)}
-      <div className="nav-caption second">STEUERUNG</div>
-      <button className="nav-item"><Users size={18}/> Rollen &amp; Benutzer</button>
-      <button className="nav-item"><ShieldCheck size={18}/> Prüfungen &amp; Freigaben</button>
-      <button className="nav-item"><Settings size={18}/> Einstellungen</button>
-      <div className="sidebar-bottom"><span className="status-dot"/> Entwicklungsumgebung <small> · lokale Daten</small></div>
-    </aside>
-    <main className="main">
-      <header className="topbar"><div><span className="eyebrow">FRIEDRICHS &amp; RATH · IATF-MANAGEMENTSYSTEM</span><h1>{title}</h1></div><div className="top-actions"><button className="icon-button" aria-label="Hilfe"><CircleHelp size={17}/></button><button className="theme-toggle" onClick={setTheme}>{dark ? <Sun size={17}/> : <Moon size={17}/>}<span>{dark ? 'Helles Design' : 'Dunkles Design'}</span></button></div></header>
-      <section className="contextbar"><div><span className="crumb">Prozesslandschaft</span><ChevronRight size={13}/><b>{processName}</b></div><span className="draft-pill">IN BEARBEITUNG</span></section>
-      {tab === 'designer' && <div className="workspace">
-        <div className="canvas-panel"><div className="panel-toolbar"><div><b>Prozessablauf</b><small>Prozessschritte per Drag-and-drop anordnen und verbinden</small></div><button className="primary-btn" onClick={addStep}><Plus size={16}/> Prozessschritt</button></div>
-          <div className="flow-canvas"><ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} onNodeClick={(_, node) => setSelected(node.id)} fitView><Background gap={22} size={1}/><MiniMap/><Controls/></ReactFlow></div>
-          <div className="canvas-foot"><span>{nodes.length} Elemente</span><span>{edges.length} Verbindungen</span><span>Lokaler Prototyp – noch nicht zentral gespeichert</span></div>
-        </div>
-        <aside className="properties"><div className="property-head"><b>Prozess-Stammdaten</b><small>Grundlegende Prozessinformationen</small></div>
-          <label>Prozessbezeichnung<input value={processName} onChange={e => setProcessName(e.target.value)}/></label>
-          <label>Prozessverantwortung<input value={owner} onChange={e => setOwner(e.target.value)}/></label>
-          <label>Prozessziel / Beschreibung<textarea value={description} onChange={e => setDescription(e.target.value)}/></label>
-          <div className="divider"/>
-          <div className="property-head"><b>Ausgewählter Prozessschritt</b><small>{activeNode?.id ?? 'Kein Element ausgewählt'}</small></div>
-          {activeNode ? <><label>Bezeichnung<input value={activeNode.data.label} onChange={e => updateSelected('label', e.target.value)}/></label><label>Verantwortliche Rolle<input value={activeNode.data.role} onChange={e => updateSelected('role', e.target.value)}/></label><label>Beschreibung<textarea value={activeNode.data.detail} onChange={e => updateSelected('detail', e.target.value)}/></label><label>Elementtyp<select value={activeNode.data.kind} onChange={e => updateSelected('kind', e.target.value)}><option value="start">Start</option><option value="task">Prozessschritt</option><option value="decision">Entscheidung</option><option value="end">Ende</option></select></label></> : <p className="muted">Wähle ein Element im Prozessablauf aus.</p>}
-          <div className="note-box">Hinweis: Diese Entwicklungsfassung speichert Änderungen noch nicht auf einem zentralen Server. Bitte keine vertraulichen Echtdaten eingeben.</div>
-        </aside>
-      </div>}
-      {tab === 'turtle' && <div className="turtle-page">
-        <div className="page-heading"><div><span className="eyebrow">PROZESSANALYSE · PROZESSSTECKBRIEF</span><h2>Prozessübersicht nach Turtle-Methode</h2><p>Zusammenhang von Eingaben, Ergebnissen, Ressourcen, Rollen, Methoden und Messgrößen.</p></div><button className="secondary-btn" onClick={() => window.print()}><ArrowDownToLine size={15}/> Drucken / PDF</button></div>
-        <section className="turtle-meta"><div><span>PROZESS</span><strong>{processName}</strong></div><div><span>PROZESSVERANTWORTUNG</span><strong>{owner || 'Noch festzulegen'}</strong></div><div><span>STATUS</span><strong><i className="status-dot"/> Entwurf</strong></div><div><span>MODELLIERTE SCHRITTE</span><strong>{nodes.length}</strong></div></section>
-        <div className="turtle-layout">
-          <div className="turtle-field turtle-resources"><div className="field-title"><Boxes size={17}/><div><b>WOMIT?</b><small>Ressourcen &amp; Infrastruktur</small></div></div><textarea value={turtleFields[0].content} onChange={e => updateTurtle(0,e.target.value)}/></div>
-          <div className="turtle-field turtle-people"><div className="field-title"><UserRound size={17}/><div><b>MIT WEM?</b><small>Rollen &amp; Verantwortlichkeiten</small></div></div><textarea value={turtleFields[1].content} onChange={e => updateTurtle(1,e.target.value)}/></div>
-          <div className="turtle-field turtle-method"><div className="field-title"><ClipboardList size={17}/><div><b>WIE?</b><small>Methoden &amp; Vorgaben</small></div></div><textarea value={turtleFields[2].content} onChange={e => updateTurtle(2,e.target.value)}/></div>
-          <div className="turtle-field turtle-measure"><div className="field-title"><Target size={17}/><div><b>WOMIT MESSEN?</b><small>Kennzahlen &amp; Wirksamkeit</small></div></div><textarea value={turtleFields[3].content} onChange={e => updateTurtle(3,e.target.value)}/></div>
-          <div className="turtle-core"><span className="core-kicker">PROZESS</span><h3>{processName}</h3><p>{description}</p><div className="core-owner"><UserRound size={14}/>{owner || 'Verantwortung offen'}</div><div className="core-divider"/><div className="core-foot"><span>{nodes.length} Prozessschritte</span><span>{edges.length} Schnittstellen</span></div></div>
-          <div className="turtle-field turtle-input"><div className="field-title"><ArrowDownToLine size={17}/><div><b>INPUT</b><small>Eingaben &amp; Auslöser</small></div></div><textarea value={turtleFields[4].content} onChange={e => updateTurtle(4,e.target.value)}/></div>
-          <div className="turtle-field turtle-output"><div className="field-title"><PackageCheck size={17}/><div><b>OUTPUT</b><small>Ergebnisse &amp; Empfänger</small></div></div><textarea value={turtleFields[5].content} onChange={e => updateTurtle(5,e.target.value)}/></div>
-        </div>
-        <div className="risk-opportunity-grid"><section className="risk-panel"><div className="field-title"><AlertTriangle size={17}/><div><b>RISIKEN</b><small>Mögliche negative Auswirkungen</small></div></div><textarea value={risks} onChange={e => setRisks(e.target.value)}/></section><section className="opportunity-panel"><div className="field-title"><Target size={17}/><div><b>CHANCEN</b><small>Möglichkeiten zur Verbesserung</small></div></div><textarea value={opportunities} onChange={e => setOpportunities(e.target.value)}/></section></div>
-        <div className="turtle-note"><CircleHelp size={15}/><span>Die Inhalte sind beispielhafte Ausgangswerte für den Prototyp. Sie müssen durch F&amp;R fachlich geprüft und prozessspezifisch bestätigt werden. Die Felder sind direkt bearbeitbar; zentrale Speicherung und Freigabe folgen.</span></div>
-      </div>}
-      {tab === 'overview' && <div className="dashboard"><div className="welcome"><span className="eyebrow">SYSTEMÜBERSICHT</span><h2>Management-Cockpit</h2><p>Zentrale Übersicht über Prozesslandschaft, dokumentierte Informationen und Verbesserungen.</p></div><div className="metric-grid"><div className="metric"><small>Prozessmodelle</small><strong>01</strong><span>Beispielprozess im Prototyp</span></div><div className="metric"><small>Offene Änderungen</small><strong>—</strong><span>Änderungsmanagement folgt</span></div><div className="metric"><small>Freigaben</small><strong>—</strong><span>Workflow folgt</span></div><div className="metric"><small>Systembereiche</small><strong>03</strong><span>IATF · Umwelt · Energie · Arbeitsschutz</span></div></div><div className="standards"><h3>Systembereiche</h3><div className="system-group"><b>IATF 16949</b><span>Eigenständiges Qualitätsmanagementsystem</span></div><div className="system-group"><b>Integriertes Managementsystem</b><span>Umweltmanagement · ISO 14001</span><span>Energiemanagement · ISO 50001</span><span>Arbeitsschutzprozesse angelehnt an ISO 45001</span></div></div></div>}
-      {tab === 'documents' && <div className="documents"><div className="welcome"><span className="eyebrow">LENKUNG DOKUMENTIERTER INFORMATION</span><h2>Dokumentenlenkung</h2><p>Übersicht der gelenkten Prozess- und Managementsystemdokumente.</p></div><div className="empty-state"><FileText size={34}/><b>Noch keine Dokumente verknüpft</b><span>Hier werden später freigegebene Prozessbeschreibungen, Verfahrensanweisungen und Arbeitsanweisungen mit Version und Freigabestatus geführt.</span></div></div>}
-      <footer>© splash Syncworks <span>F&amp;R Process Studio · Entwicklungsstand 0.2.0</span></footer>
-    </main>
-  </div>;
-}
+function StatusBadge({status}:{status:string}){const cls=status==='Freigegeben'?'good':status==='In Prüfung'?'review':status==='Zurückgezogen'?'off':'draft';return <span className={'status-badge '+cls}>{status}</span>}
+function DocTable({docs,open}:{docs:Doc[];open:(d:Doc)=>void}){return <div className="doc-table-wrap"><table className="doc-table"><thead><tr><th>Kennung / Titel</th><th>Bereich</th><th>Version</th><th>Status</th><th>Verantwortlich</th></tr></thead><tbody>{docs.map(d=><tr key={d.id} onClick={()=>open(d)}><td><b>{d.id}</b><span>{d.title}</span></td><td>{d.area==='IATF_QM'?'IATF':'IMS'}</td><td>{d.version}</td><td><StatusBadge status={d.status}/></td><td>{d.owner}</td></tr>)}</tbody></table>{!docs.length&&<div className="table-empty">Keine passenden Dokumente gefunden.</div>}</div>}
