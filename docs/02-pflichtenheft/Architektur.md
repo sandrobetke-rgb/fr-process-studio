@@ -8,10 +8,10 @@ F&R Process Studio verwaltet Prozessmodelle des IATF-Managementsystems einschlie
 2. API-Backend (geplant): Validierung, Geschäftsregeln, Rechteprüfung und Versionierung.
 3. PostgreSQL (geplant): Prozesse, Prozessversionen, Dokumente, Dokumentversionen, Dokumenttypen, Vorlagen, Prozess-/Schrittzuordnungen, Rollen, Änderungen, Prüfzyklen und Freigaben.
 4. Dateispeicher (geplant): freigegebene Dokumentdateien, Entwurfsstände, Anlagen, Bilder und Medien; Metadaten und Verknüpfungen verbleiben relational in PostgreSQL.
-5. KI-Adapter (optional, später): Impact-Analyse und Vorschläge; Ergebnisse sind Entwürfe.
+5. Workflow-/Audit-Service (geplant): serverseitige Statusmaschine, Aufgabenrouting, Funktionstrennung, Fristen, Erinnerungen und append-only Audit-Trail.\n6. Signatur-Adapter (geplant): interne elektronische Freigabe plus optionale Anbindung qualifizierter Vertrauensdiensteanbieter und Zeitstempel.\n7. KI-Adapter (optional, später): Impact-Analyse und Vorschläge; Ergebnisse sind Entwürfe.
 
 ## Datenfluss
-Browser → API → Authentifizierung/Autorisierung → Geschäftslogik → Datenbank/Dateispeicher. Änderungen an freigegebenen Datensätzen erzeugen neue Versionen und Audit-Ereignisse.
+Browser → API → Authentifizierung/Autorisierung → Geschäftslogik → Datenbank/Dateispeicher. Änderungen an freigegebenen Datensätzen erzeugen neue Versionen und Audit-Ereignisse. Freigaben werden an einen unveränderlichen Versionsstand gebunden; Integritätsnachweise und Audit-Protokolle werden getrennt gegen unbemerkte Manipulation geschützt.
 
 ## Prototypgrenze
 Die derzeitige UI arbeitet lokal im Browser und dient der Funktions- und Bedienvalidierung. Sie ist nicht für den produktiven Einsatz mit echten Unternehmensdaten freigegeben.
