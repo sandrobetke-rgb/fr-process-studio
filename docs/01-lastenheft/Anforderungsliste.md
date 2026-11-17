@@ -4,7 +4,7 @@
 |---|---|---|---|
 | LF-001 | Grafischer Prozessdesigner mit Drag-and-drop | Muss | Prototyp begonnen |
 | LF-002 | Prozesslandkarte für Führungs-, Kern- und Unterstützungsprozesse | Muss | Geplant |
-| LF-003 | Turtle-Diagramm aus Prozessdaten | Muss | UI-Platzhalter begonnen |
+| LF-003 | Professionelles, zusammenhängendes Turtle-Prozessprofil mit sechs Kernfeldern sowie Risiken und Chancen; editierbar und druckfähig | Muss | UI umgesetzt, fachliche Datenanbindung offen |
 | LF-004 | Automatischer Prozesssteckbrief/-beschreibung als Entwurf | Soll | Geplant |
 | LF-005 | Einfache Mitarbeiteransicht | Muss | Geplant |
 | LF-006 | Zuordnung IATF 16949, ISO 14001, ISO 50001 | Muss | Geplant |
