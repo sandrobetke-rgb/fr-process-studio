@@ -6,7 +6,7 @@ import {
 } from '@xyflow/react';
 import {
   Moon, Sun, Plus, LayoutDashboard, Workflow, FileText, Settings, Users,
-  ShieldCheck, ArrowDownToLine, CircleHelp, Search, ChevronRight, Gauge,
+  ShieldCheck, ArrowDownToLine, CircleHelp, ChevronRight, Gauge,
   Boxes, UserRound, ClipboardList, Target, AlertTriangle, PackageCheck
 } from 'lucide-react';
 
@@ -67,16 +67,16 @@ export default function App() {
   const updateSelected = (field: keyof ProcessData, value: string) => setNodes(ns => ns.map(n => n.id === selected ? { ...n, data: { ...n.data, [field]: value } } : n));
   const setTheme = () => { const next = !dark; setDark(next); localStorage.setItem('frps-theme', next ? 'dark' : 'light'); };
   const nav = useMemo(() => [
-    { id: 'overview' as Tab, label: 'IMS-Cockpit', icon: LayoutDashboard },
+    { id: 'overview' as Tab, label: 'Management-Cockpit', icon: LayoutDashboard },
     { id: 'designer' as Tab, label: 'Prozessdesigner', icon: Workflow },
     { id: 'turtle' as Tab, label: 'Turtle-Diagramm', icon: Gauge },
     { id: 'documents' as Tab, label: 'Dokumentenlenkung', icon: FileText }
   ], []);
   const updateTurtle = (index: number, content: string) => setTurtleFields(fs => fs.map((f, i) => i === index ? { ...f, content } : f));
-  const title = tab === 'designer' ? 'Prozessdesigner' : tab === 'turtle' ? 'Turtle-Diagramm' : tab === 'overview' ? 'IMS-Cockpit' : 'Dokumentenlenkung';
+  const title = tab === 'designer' ? 'Prozessdesigner' : tab === 'turtle' ? 'Turtle-Diagramm' : tab === 'overview' ? 'Management-Cockpit' : 'Dokumentenlenkung';
   return <div className={dark ? 'app dark' : 'app light'}>
     <aside className="sidebar">
-      <div className="brand"><div className="brand-mark">F&amp;R</div><div><b>Process Studio</b><small>INTEGRATED MANAGEMENT</small></div></div>
+      <div className="brand"><div className="brand-mark">F&amp;R</div><div><b>Process Studio</b><small>IATF MANAGEMENT SYSTEM</small></div></div>
       <div className="nav-caption">ARBEITSBEREICH</div>
       {nav.map(item => <button key={item.id} className={tab === item.id ? 'nav-item active' : 'nav-item'} onClick={() => setTab(item.id)}><item.icon size={18}/>{item.label}</button>)}
       <div className="nav-caption second">STEUERUNG</div>
@@ -86,7 +86,7 @@ export default function App() {
       <div className="sidebar-bottom"><span className="status-dot"/> Entwicklungsumgebung <small> · lokale Daten</small></div>
     </aside>
     <main className="main">
-      <header className="topbar"><div><span className="eyebrow">FRIEDRICHS &amp; RATH · INTEGRIERTES MANAGEMENTSYSTEM</span><h1>{title}</h1></div><div className="top-actions"><button className="icon-button" aria-label="Hilfe"><CircleHelp size={17}/></button><button className="theme-toggle" onClick={setTheme}>{dark ? <Sun size={17}/> : <Moon size={17}/>}<span>{dark ? 'Helles Design' : 'Dunkles Design'}</span></button></div></header>
+      <header className="topbar"><div><span className="eyebrow">FRIEDRICHS &amp; RATH · IATF-MANAGEMENTSYSTEM</span><h1>{title}</h1></div><div className="top-actions"><button className="icon-button" aria-label="Hilfe"><CircleHelp size={17}/></button><button className="theme-toggle" onClick={setTheme}>{dark ? <Sun size={17}/> : <Moon size={17}/>}<span>{dark ? 'Helles Design' : 'Dunkles Design'}</span></button></div></header>
       <section className="contextbar"><div><span className="crumb">Prozesslandschaft</span><ChevronRight size={13}/><b>{processName}</b></div><span className="draft-pill">IN BEARBEITUNG</span></section>
       {tab === 'designer' && <div className="workspace">
         <div className="canvas-panel"><div className="panel-toolbar"><div><b>Prozessablauf</b><small>Prozessschritte per Drag-and-drop anordnen und verbinden</small></div><button className="primary-btn" onClick={addStep}><Plus size={16}/> Prozessschritt</button></div>
@@ -118,7 +118,7 @@ export default function App() {
         <div className="risk-opportunity-grid"><section className="risk-panel"><div className="field-title"><AlertTriangle size={17}/><div><b>RISIKEN</b><small>Mögliche negative Auswirkungen</small></div></div><textarea value={risks} onChange={e => setRisks(e.target.value)}/></section><section className="opportunity-panel"><div className="field-title"><Target size={17}/><div><b>CHANCEN</b><small>Möglichkeiten zur Verbesserung</small></div></div><textarea value={opportunities} onChange={e => setOpportunities(e.target.value)}/></section></div>
         <div className="turtle-note"><CircleHelp size={15}/><span>Die Inhalte sind beispielhafte Ausgangswerte für den Prototyp. Sie müssen durch F&amp;R fachlich geprüft und prozessspezifisch bestätigt werden. Die Felder sind direkt bearbeitbar; zentrale Speicherung und Freigabe folgen.</span></div>
       </div>}
-      {tab === 'overview' && <div className="dashboard"><div className="welcome"><span className="eyebrow">INTEGRIERTES MANAGEMENTSYSTEM</span><h2>IMS-Cockpit</h2><p>Zentrale Übersicht über Prozesslandschaft, dokumentierte Informationen und Verbesserungen.</p></div><div className="metric-grid"><div className="metric"><small>Prozessmodelle</small><strong>01</strong><span>Beispielprozess im Prototyp</span></div><div className="metric"><small>Offene Änderungen</small><strong>—</strong><span>Änderungsmanagement folgt</span></div><div className="metric"><small>Freigaben</small><strong>—</strong><span>Workflow folgt</span></div><div className="metric"><small>Normenbereiche</small><strong>03</strong><span>IATF · Umwelt · Energie</span></div></div><div className="standards"><h3>IMS-Normenbereiche</h3><div><b>IATF 16949</b><span>Qualitätsmanagement</span></div><div><b>ISO 14001</b><span>Umweltmanagement</span></div><div><b>ISO 50001</b><span>Energiemanagement</span></div></div></div>}
+      {tab === 'overview' && <div className="dashboard"><div className="welcome"><span className="eyebrow">INTEGRIERTES MANAGEMENTSYSTEM</span><h2>IMS-Cockpit</h2><p>Zentrale Übersicht über Prozesslandschaft, dokumentierte Informationen und Verbesserungen.</p></div><div className="metric-grid"><div className="metric"><small>Prozessmodelle</small><strong>01</strong><span>Beispielprozess im Prototyp</span></div><div className="metric"><small>Offene Änderungen</small><strong>—</strong><span>Änderungsmanagement folgt</span></div><div className="metric"><small>Freigaben</small><strong>—</strong><span>Workflow folgt</span></div><div className="metric"><small>Systembereiche</small><strong>03</strong><span>IATF · Umwelt · Energie</span></div></div><div className="standards"><h3>Systembereiche</h3><div><b>IATF 16949</b><span>Führendes Managementsystem</span></div><div><b>Umweltmanagement</b><span>In das IATF-System integriert</span></div><div><b>Energiemanagement</b><span>In das IATF-System integriert</span></div></div></div>}
       {tab === 'documents' && <div className="documents"><div className="welcome"><span className="eyebrow">LENKUNG DOKUMENTIERTER INFORMATION</span><h2>Dokumentenlenkung</h2><p>Übersicht der gelenkten Prozess- und Managementsystemdokumente.</p></div><div className="empty-state"><FileText size={34}/><b>Noch keine Dokumente verknüpft</b><span>Hier werden später freigegebene Prozessbeschreibungen, Verfahrensanweisungen und Arbeitsanweisungen mit Version und Freigabestatus geführt.</span></div></div>}
       <footer>© splash Syncworks <span>F&amp;R Process Studio · Entwicklungsstand 0.2.0</span></footer>
     </main>
