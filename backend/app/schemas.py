@@ -61,3 +61,19 @@ class DocumentRead(BaseModel):
     system_area_code: str
     status: str
     versions: list[DocumentVersionRead]
+
+
+class DocumentVersionCreate(BaseModel):
+    content: dict
+    change_reason: str = Field(min_length=3, max_length=2000)
+
+
+class DocumentVersionCreateRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: str
+    version_number: int
+    content: dict
+    change_reason: str
+    status: str
+    content_hash: str
+    created_at: datetime
