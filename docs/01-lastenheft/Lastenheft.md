@@ -1,7 +1,7 @@
 # Lastenheft – F&R Process Studio
 
 **Dokument-ID:** LF-FRPS-001  
-**Version:** 0.6  
+**Version:** 0.7  
 **Stand:** 17.11.2026  
 **Status:** Arbeitsstand – UI-Entwicklung
 
@@ -38,28 +38,35 @@ Turtle-Darstellungen aus denselben strukturierten Prozessdaten erzeugen. Die Dar
 ### 4.4 Prozesssteckbrief und Prozessbeschreibung
 Aus den Prozessdaten einen strukturierten Steckbrief und einen Entwurf der Prozessbeschreibung erzeugen. Keine fehlenden Fakten erfinden; offene Angaben markieren. Veröffentlichung nur nach Prüfung und Freigabe.
 
-### 4.5 Mitarbeiteransicht
+### 4.5 Dokumentenerstellung und Dokumentenlenkung
+Die Anwendung muss gelenkte Dokumente direkt erstellen, bearbeiten, versionieren, prüfen, freigeben, veröffentlichen und archivieren können. Dokumentarten müssen mindestens Verfahrensanweisungen (VA), Arbeitsanweisungen (AA), Prozessbeschreibungen und Prozesssteckbriefe, Prüfanweisungen, Prüfpläne, Formblätter, Checklisten, Nachweisvorlagen und Betriebsanweisungen unterstützen. Weitere Dokumentarten müssen administrativ ergänzbar sein.
+
+Dokumente müssen über eindeutige Dokumentenkennung, Titel, Dokumentart, Systembereich (IATF 16949 oder integrierter Umwelt-/Energie-/Arbeitsschutzbereich), Prozesse, Prozessschritte, Verantwortliche, Ersteller, Prüfer, Freigeber, Version, Status, Erstell-/Freigabedatum und nächstes Prüfdatum verwaltet werden können. Ein Dokument kann mehreren Prozessen oder Prozessschritten zugeordnet sein; ein Prozess kann mehrere Dokumente referenzieren. Zuordnungen müssen in Prozessansicht, Turtle/Steckbrief und Dokumentenübersicht sichtbar sein.
+
+Vorlagen mit einheitlichem F&R-Layout und „© splash Syncworks“ unterstützen. Dokumente müssen als Entwurf erstellt und bearbeitet werden können; Freigabe und Veröffentlichung erfolgen ausschließlich über definierte menschliche Rollen. Alte Versionen bleiben nachvollziehbar und dürfen nicht unbemerkt überschrieben werden. Ersetzte Versionen werden als ungültig/abgelöst gekennzeichnet und bleiben gemäß Aufbewahrungsregeln historisch verfügbar. Dokumente müssen mit Anlagen, Bildern und relevanten Medien verknüpft werden können. PDF-Export mit Dokumentenmetadaten ist vorzusehen.
+
+### 4.6 Mitarbeiteransicht
 Freigegebene Prozesse in einfacher, verständlicher Sprache darstellen. Prozessschritte, Rollen, relevante Arbeitsanweisungen und Dokumente sowie optionale Bilder/Videos unterstützen. Responsive Nutzung auf PC, Tablet und Smartphone.
 
-### 4.6 Unterstützung des IATF-Managementsystems und integrierter Bereiche
+### 4.7 Unterstützung der zwei Systembereiche
 IATF 16949 bildet den normativen Rahmen des führenden Managementsystems. Umwelt- und Energiemanagement werden integriert berücksichtigt. Arbeitsschutzprozesse können an ISO 45001 angelehnt abgebildet werden; dies darf nicht als Zertifizierung oder vollständige Normkonformität nach ISO 45001 dargestellt werden. Verantwortlichkeiten, Risiken und Chancen, Kennzahlen, Ziele, Maßnahmen und Nachweise werden dokumentiert. Zuordnungen müssen fachlich durch F&R geprüft werden.
 
-### 4.7 Änderungsmanagement
+### 4.8 Änderungsmanagement
 Änderungswünsche in natürlicher Sprache erfassen. Auf Anfrage das Änderungsprotokoll mit offenen und abgeschlossenen Änderungen anzeigen. Eine KI darf betroffene Prozesse, Dokumente, Rollen, Kennzahlen, Risiken und Normzuordnungen analysieren und Änderungsvorschläge erstellen. Keine automatische Änderung oder Freigabe bereits genehmigter Inhalte. Jede Änderung benötigt menschliche Prüfung und Freigabe.
 
-### 4.8 Versionierung und Freigaben
+### 4.9 Versionierung und Freigaben
 Version, Änderungsgrund, Ersteller, Prüfer, Freigeber, Zeitstempel und Status dokumentieren. Frühere freigegebene Versionen nachvollziehbar aufbewahren.
 
-### 4.9 Export
+### 4.10 Export
 Prozessdarstellungen und freigegebene Dokumente mindestens als PDF sowie geeignete Bild-/Vektorformate exportieren. Export mit Dokumentenkennung, Versionsstand und Status; eigene Vorlagen mit „© splash Syncworks“.
 
-### 4.10 Benutzer- und Rechteverwaltung
+### 4.11 Benutzer- und Rechteverwaltung
 Rollenbasierte Rechte. Mitarbeiter standardmäßig lesend auf freigegebene Inhalte; Bearbeitung, Prüfung und Freigabe getrennt berechtigen.
 
-### 4.11 Themes
+### 4.12 Themes
 Light- und Dark-Modus für alle Module, je Benutzer speicherbar. Lesbarkeit und Kontrast in beiden Modi sicherstellen. Druckansicht gesondert optimieren.
 
-### 4.12 Management-Cockpit
+### 4.13 Management-Cockpit
 Prozessstatus, offene Änderungen, überfällige Prüfungen, fehlende Kennzahlen, Dokumentenstatus und offene Maßnahmen darstellen.
 
 ## 5. Nichtfunktionale Anforderungen
@@ -82,6 +89,8 @@ Keine automatische Zertifizierung, keine autonome KI-Freigabe und kein Ersatz f�
 
 1. Berechtigte Nutzer können Prozesse grafisch erstellen, speichern, erneut öffnen und bearbeiten.
 2. Turtle und Prozesssteckbrief basieren auf denselben Prozessdaten.
+3. Dokumente der definierten Dokumentarten können erstellt, versioniert und Prozessen sowie Prozessschritten zugeordnet werden.
+4. Dokumente durchlaufen einen geregelten Prüf- und Freigabeprozess; historische Versionen bleiben nachvollziehbar.
 3. Mitarbeiter können freigegebene Prozesse ohne Bearbeitungsrechte lesen.
 4. Änderungen können erfasst, analysiert, geprüft und freigegeben werden.
 5. Frühere Versionen bleiben nachvollziehbar.
