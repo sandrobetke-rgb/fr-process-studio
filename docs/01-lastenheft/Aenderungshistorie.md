@@ -9,3 +9,4 @@
 | 0.4 | 17.11.2026 | Turtle-Anforderung präzisiert: professionelles zentrales Prozessprofil mit sechs Kernfeldern, Risiken/Chancen, responsivem Layout und Druckansicht; UI überarbeitet | Umgesetzt im Frontend-Prototyp |
 | 0.6 | 17.11.2026 | Systemstruktur präzisiert: IATF 16949 separat; integrierter Bereich aus Umwelt (ISO 14001), Energie (ISO 50001) und Arbeitsschutzprozessen angelehnt an ISO 45001 | Verbindliche fachliche Korrektur |
 | 0.7 | 17.11.2026 | Dokumentenerstellung und -lenkung ergänzt: VA, AA, Prozess- und Prüfdokumente, Formblätter, Checklisten, Betriebsanweisungen, Prozess-/Schrittzuordnung, Versionierung und Freigabe | Anforderungen aufgenommen |
+| 0.8 | 17.11.2026 | Revisionsfähige Dokumentenlenkung ergänzt: konfigurierbarer Workflow, Funktionstrennung, unveränderliche Versionen, Audit-Trail, Integritätsprüfung, elektronische Freigabe und optionaler QTSP/eIDAS-Signaturdienst | Muss-/Soll-Anforderungen aufgenommen |
