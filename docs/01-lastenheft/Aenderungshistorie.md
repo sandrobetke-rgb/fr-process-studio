@@ -7,3 +7,4 @@
 | 0.3 | 17.11.2026 | Erstes Lastenheft im GitHub-Repository angelegt | Erfasst |
 | 0.4 | 17.11.2026 | Technischer Prototypumfang und Umsetzungsstatus dokumentiert | Erfasst |
 | 0.4 | 17.11.2026 | Turtle-Anforderung präzisiert: professionelles zentrales Prozessprofil mit sechs Kernfeldern, Risiken/Chancen, responsivem Layout und Druckansicht; UI überarbeitet | Umgesetzt im Frontend-Prototyp |
+| 0.6 | 17.11.2026 | Systemstruktur präzisiert: IATF 16949 separat; integrierter Bereich aus Umwelt (ISO 14001), Energie (ISO 50001) und Arbeitsschutzprozessen angelehnt an ISO 45001 | Verbindliche fachliche Korrektur |
