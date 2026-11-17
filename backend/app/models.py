@@ -98,3 +98,13 @@ class DocumentVersion(Base):
     content_hash: Mapped[str] = mapped_column(String(64), default="", nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
     document: Mapped[DocumentMaster] = relationship(back_populates="versions")
+
+
+class DocumentProcessLink(Base):
+    __tablename__ = "document_process_links"
+    __table_args__ = (UniqueConstraint("document_id", "process_id", "process_step_id", name="uq_document_process_step"),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    document_id: Mapped[str] = mapped_column(ForeignKey("document_masters.id", ondelete="CASCADE"), nullable=False)
+    process_id: Mapped[str] = mapped_column(ForeignKey("processes.id", ondelete="CASCADE"), nullable=False)
+    process_step_id: Mapped[str] = mapped_column(String(100), default="", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
