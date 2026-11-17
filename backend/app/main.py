@@ -48,7 +48,7 @@ def list_processes(db: Session = Depends(get_db)) -> list[Process]:
 def create_process(payload: ProcessCreate, db: Session = Depends(get_db)) -> Process:
     if db.scalar(select(Process).where(Process.process_number == payload.process_number)):
         raise HTTPException(status_code=409, detail="Prozessnummer ist bereits vergeben")
-    process = Process(process_number=payload.process_number, owner=payload.owner)
+    process = Process(process_number=payload.process_number, owner=payload.owner, system_area_code=payload.system_area_code)
     version = ProcessVersion(
         version_number=1,
         name=payload.name,
