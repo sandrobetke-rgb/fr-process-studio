@@ -1,9 +1,9 @@
 # Lastenheft – F&R Process Studio
 
 **Dokument-ID:** LF-FRPS-001  
-**Version:** 0.3  
+**Version:** 0.4  
 **Stand:** 17.11.2026  
-**Status:** Arbeitsstand
+**Status:** Arbeitsstand – UI-Entwicklung
 
 ## 1. Ziel
 
@@ -33,7 +33,7 @@ Prozesse per Drag-and-drop erstellen, bearbeiten, verbinden und speichern. Minde
 Führungs-, Kern- und Unterstützungsprozesse übersichtlich darstellen und untereinander verknüpfen.
 
 ### 4.3 Turtle-Diagramm
-Turtle-Darstellungen aus denselben strukturierten Prozessdaten erzeugen. Inhalte: Input, Output, Ressourcen, Rollen, Methoden, Kennzahlen sowie Risiken und Chancen. Fehlende Angaben sichtbar kennzeichnen.
+Turtle-Darstellungen aus denselben strukturierten Prozessdaten erzeugen. Die Darstellung muss als professionelles, zusammenhängendes Prozessprofil mit zentralem Prozesskern und klar zugeordneten Feldern für Input, Output, Womit (Ressourcen), Mit wem (Rollen), Wie (Methoden) und Womit messen (Kennzahlen) aufgebaut sein. Risiken und Chancen werden ergänzend ausgewiesen. Felder müssen direkt bearbeitbar sein; fehlende oder nur beispielhafte Inhalte sind eindeutig zu kennzeichnen. Darstellung responsiv, druckfähig und für PDF-Ausgabe geeignet.
 
 ### 4.4 Prozesssteckbrief und Prozessbeschreibung
 Aus den Prozessdaten einen strukturierten Steckbrief und einen Entwurf der Prozessbeschreibung erzeugen. Keine fehlenden Fakten erfinden; offene Angaben markieren. Veröffentlichung nur nach Prüfung und Freigabe.
