@@ -201,3 +201,27 @@ def test_process_revision_creates_new_version_and_preserves_original():
     assert versions[0]["content"] == {"steps": ["A"]}
     assert versions[1]["version_number"] == 2
     assert versions[1]["content"] == {"steps": ["A", "B"]}
+
+
+def test_process_view_lists_linked_documents():
+    process = client.post("/api/processes", json={
+        "process_number": "P-DOC-VIEW-001",
+        "name": "Montage",
+    }).json()
+    document = client.post("/api/documents", json={
+        "document_number": "AA-DOC-VIEW-001",
+        "title": "Montageanweisung",
+        "document_type_code": "AA",
+        "system_area_code": "IATF_QM",
+    }).json()
+    link = client.post(
+        f"/api/documents/{document['id']}/process-links",
+        json={"process_id": process["id"], "process_step_id": "assembly-02"},
+    )
+    assert link.status_code == 201
+
+    response = client.get(f"/api/processes/{process['id']}/documents")
+    assert response.status_code == 200
+    assert len(response.json()) == 1
+    assert response.json()[0]["document_number"] == "AA-DOC-VIEW-001"
+    assert response.json()[0]["process_step_id"] == "assembly-02"
