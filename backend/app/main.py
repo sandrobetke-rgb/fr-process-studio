@@ -1,12 +1,12 @@
-from fastapi import Depends, FastAPI, HTTPException, status
+import hashlib\nimport json\n\nfrom fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from .config import settings
 from .database import get_db
-from .models import AuditEvent, ManagementSystemArea, Process, ProcessVersion
-from .schemas import ProcessCreate, ProcessRead
+from .models import AuditEvent, DocumentMaster, DocumentType, DocumentVersion, ManagementSystemArea, Process, ProcessVersion
+from .schemas import DocumentCreate, DocumentRead, ProcessCreate, ProcessRead
 
 app = FastAPI(title=settings.app_name, version="0.1.0")
 app.add_middleware(
@@ -68,3 +68,64 @@ def get_process(process_id: str, db: Session = Depends(get_db)) -> Process:
     if process is None:
         raise HTTPException(status_code=404, detail="Prozess nicht gefunden")
     return process
+
+
+DEFAULT_DOCUMENT_TYPES = [
+    ("VA", "Verfahrensanweisung"),
+    ("AA", "Arbeitsanweisung"),
+    ("PB", "Prozessbeschreibung"),
+    ("PSB", "Prozesssteckbrief"),
+    ("PA", "Prüfanweisung"),
+    ("PL", "Prüfplan"),
+    ("FB", "Formblatt"),
+    ("CL", "Checkliste"),
+    ("NV", "Nachweisvorlage"),
+    ("BA", "Betriebsanweisung"),
+]
+
+
+@app.get("/api/document-types")
+def list_document_types(db: Session = Depends(get_db)) -> list[dict[str, str]]:
+    existing = {item.code for item in db.scalars(select(DocumentType)).all()}
+    for code, name in DEFAULT_DOCUMENT_TYPES:
+        if code not in existing:
+            db.add(DocumentType(code=code, name=name))
+    db.commit()
+    items = db.scalars(select(DocumentType).where(DocumentType.active.is_(True)).order_by(DocumentType.code)).all()
+    return [{"id": item.id, "code": item.code, "name": item.name} for item in items]
+
+
+@app.get("/api/documents", response_model=list[DocumentRead])
+def list_documents(db: Session = Depends(get_db)) -> list[DocumentMaster]:
+    return list(db.scalars(select(DocumentMaster).order_by(DocumentMaster.document_number)).unique().all())
+
+
+@app.post("/api/documents", response_model=DocumentRead, status_code=status.HTTP_201_CREATED)
+def create_document(payload: DocumentCreate, db: Session = Depends(get_db)) -> DocumentMaster:
+    if db.scalar(select(DocumentMaster).where(DocumentMaster.document_number == payload.document_number)):
+        raise HTTPException(status_code=409, detail="Dokumentennummer ist bereits vergeben")
+    document_type = db.scalar(select(DocumentType).where(DocumentType.code == payload.document_type_code, DocumentType.active.is_(True)))
+    if document_type is None:
+        raise HTTPException(status_code=422, detail="Unbekannte oder inaktive Dokumentart")
+    canonical_content = json.dumps(payload.content, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    content_hash = hashlib.sha256(canonical_content.encode("utf-8")).hexdigest()
+    document = DocumentMaster(
+        document_number=payload.document_number,
+        title=payload.title,
+        document_type_id=document_type.id,
+        owner=payload.owner,
+        system_area_code=payload.system_area_code,
+    )
+    version = DocumentVersion(
+        version_number=1,
+        content=payload.content,
+        change_reason=payload.change_reason,
+        content_hash=content_hash,
+    )
+    document.versions.append(version)
+    db.add(document)
+    db.flush()
+    db.add(AuditEvent(action="DOCUMENT_CREATED", object_type="DocumentMaster", object_id=document.id, version_id=version.id, reason=payload.change_reason))
+    db.commit()
+    db.refresh(document)
+    return document
