@@ -56,7 +56,7 @@ export default function App() {
   const [risks, setRisks] = useState('Unvollständige oder widersprüchliche Anforderungen\nVerzögerte Prüfung und Freigabe\nInformationsverlust an Prozessschnittstellen');
   const [opportunities, setOpportunities] = useState('Standardisierte digitale Erfassung\nWeniger Rückfragen durch Vollständigkeitsprüfung\nTransparente Übergabe an Folgeprozesse');
   const activeNode = nodes.find(n => n.id === selected);
-  const onNodesChange = useCallback((changes: NodeChange[]) => setNodes(ns => applyNodeChanges(changes, ns)), []);
+  const onNodesChange = useCallback((changes: NodeChange<Node<ProcessData>>[]) => setNodes(ns => applyNodeChanges<ProcessData>(changes, ns)), []);
   const onEdgesChange = useCallback((changes: EdgeChange[]) => setEdges(es => applyEdgeChanges(changes, es)), []);
   const onConnect = useCallback((connection: Connection) => setEdges(es => addEdge({ ...connection, animated: true }, es)), []);
   const addStep = () => {
