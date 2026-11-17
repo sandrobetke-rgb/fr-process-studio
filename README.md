@@ -35,6 +35,7 @@ Backend, Datenbank, Authentifizierung, Mehrbenutzerbetrieb, zentrale Speicherung
 - [Änderungshistorie](docs/01-lastenheft/Aenderungshistorie.md)
 - [Technische Spezifikation](docs/02-pflichtenheft/Technische-Spezifikation.md)
 - [Architektur](docs/02-pflichtenheft/Architektur.md)
+- [Fachliches Datenmodell](docs/02-pflichtenheft/Datenmodell.md)
 - [Testkonzept](docs/03-testkonzept/Testkonzept.md)
 
 © splash Syncworks
