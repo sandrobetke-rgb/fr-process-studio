@@ -1,6 +1,6 @@
 # Technische Spezifikation – F&R Process Studio
 
-**Version:** 0.6 · **Stand:** 17.11.2026 · **Status:** Architektur- und Datenmodellvorschlag
+**Version:** 0.7 · **Stand:** 17.11.2026 · **Status:** Architektur- und Datenmodellvorschlag
 
 ## Zielbild
 
@@ -61,6 +61,13 @@ Produktivdaten gehören nicht in GitHub. Geheimnisse werden ausschließlich übe
 ## Aktueller Implementierungsumfang
 
 - React/Vite/TypeScript-Grundgerüst
+- FastAPI-Backend mit SQLAlchemy und PostgreSQL-Treiber
+- PostgreSQL-Entwicklungsumgebung via Docker Compose; API-Port im Compose-Setup auf localhost begrenzt
+- Alembic-Migrationsverwaltung mit initialem Schema für Systembereiche, Prozesse, Prozessversionen, Dokumentstämme, Dokumentversionen und Audit-Ereignisse
+- Erste REST-Endpunkte: Healthcheck, Systembereiche, Prozessanlage/-abruf, Dokumentarten, Dokumentanlage/-abruf
+- SHA-256-Prüfsumme des kanonisierten Dokumentinhalts bei der Dokumenterstanlage
+- Automatisierte Backend-Tests und Migrationstest in GitHub Actions
+- React/Vite/TypeScript-Grundgerüst
 - Visueller Editor mit Beispielprozess, Knotenbearbeitung und Verbindungen
 - Prozessstammdaten und Turtle-Beispielinhalte im lokalen UI-Zustand
 - Light-/Dark-Modus (lokale Browserpräferenz)
@@ -68,7 +75,7 @@ Produktivdaten gehören nicht in GitHub. Geheimnisse werden ausschließlich übe
 
 ## Nicht implementiert
 
-Backend, PostgreSQL, Authentifizierung, Mehrbenutzerbetrieb, zentrale Speicherung, produktive Prozessversionierung, produktive Turtle-Datenpflege, Dokumentenerstellung/-lenkung, Freigabe-Workflow, Audit-Trail, Signaturintegration, Verteilung, Kenntnisnahme, KI-Änderungsanalyse, Export und automatisierte Tests.
+Authentifizierung, produktive Rollen- und Rechteverwaltung, Mehrbenutzer-Funktionstests, vollständige Prozessversionierung und Freigabeworkflows, Dokumentenrevision und Freigabe, belastbarer manipulationsgeschützter Audit-Trail, Signaturintegration, Verteilung, Kenntnisnahme, KI-Änderungsanalyse und Export. Die vorhandenen API-Endpunkte sind Entwicklungsgrundlage und dürfen ohne Authentifizierung und Härtung nicht öffentlich betrieben werden.
 
 ## Architekturentscheidungen mit Prüfbedarf
 
