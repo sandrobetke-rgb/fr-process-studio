@@ -1,4 +1,7 @@
-import hashlib\nimport json\n\nfrom fastapi import Depends, FastAPI, HTTPException, status
+import hashlib
+import json
+
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import select
 from sqlalchemy.orm import Session
