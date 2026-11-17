@@ -20,3 +20,10 @@
 | LF-020 | Elektronische Freigabe mit aktiver Bestätigung, Re-Authentifizierung/MFA-Option und exportierbarem Freigabenachweis | Muss | Geplant |
 | LF-021 | Optionale Anbindung qualifizierter Vertrauensdienste für fortgeschrittene/qualifizierte elektronische Signaturen | Soll | Zu evaluieren |
 | LF-022 | Unveränderliche freigegebene Versionen, Aufbewahrung, Archivexport, Backup und getestete Wiederherstellung | Muss | Geplant |
+| LF-023 | Zentrales gelenktes Dokumentenregister mit Status, Verantwortlichen, Versionen und Prüffristen | Muss | Geplant |
+| LF-024 | Gesteuerte Verteilung gültiger Fassungen an Standorte, Abteilungen, Rollen und Zielgruppen; Sperrung abgelöster Fassungen | Muss | Geplant |
+| LF-025 | Dokumentierte Kenntnisnahme und bei Bedarf Unterweisung je Mitarbeiter und konkreter Dokumentversion | Muss | Geplant |
+| LF-026 | Verwaltung externer Dokumente mit Quelle, Ausgabestand, Gültigkeitsprüfung und betroffenen Prozessen | Soll | Geplant |
+| LF-027 | Regelmäßige/anlassbezogene Dokumentenprüfung, Wiedervorlage, Eskalation und dokumentierte Prüfentscheidung | Muss | Geplant |
+| LF-028 | Kontrollierte Außerkraftsetzung, Archivierung und nachvollziehbarer Rückzug ohne spurloses Löschen | Muss | Geplant |
+| LF-029 | Filterbare Dokumentenlisten und Statusberichte sowie kontrollierter Notfalländerungsworkflow | Soll | Geplant |
