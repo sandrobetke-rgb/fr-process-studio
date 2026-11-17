@@ -1,6 +1,6 @@
 # F&R Process Studio
 
-Browserbasierter Prototyp für grafisches IMS-Prozessmanagement bei Friedrichs & Rath GmbH.
+Browserbasierter Prototyp für grafisches IATF-Prozessmanagement mit integrierten Umwelt- und Energiethemen bei Friedrichs & Rath GmbH.
 
 > **Status:** Früher Entwicklungsprototyp – nicht für produktive IMS-Daten oder Auditnachweise freigegeben.
 
