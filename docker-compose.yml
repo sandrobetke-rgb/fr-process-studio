@@ -22,6 +22,7 @@ services:
       ENVIRONMENT: development
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-frps}:${POSTGRES_PASSWORD:-frps_local_only_change_me}@db:5432/${POSTGRES_DB:-frps}
       CORS_ORIGINS: http://localhost:5173
+    command: sh -c "alembic -c alembic.ini upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
     ports:
       - "8000:8000"
     depends_on:
