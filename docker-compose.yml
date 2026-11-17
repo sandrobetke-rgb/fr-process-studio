@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-frps}
+      POSTGRES_USER: ${POSTGRES_USER:-frps}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-frps_local_only_change_me}
+    volumes:
+      - frps-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-frps} -d ${POSTGRES_DB:-frps}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      ENVIRONMENT: development
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-frps}:${POSTGRES_PASSWORD:-frps_local_only_change_me}@db:5432/${POSTGRES_DB:-frps}
+      CORS_ORIGINS: http://localhost:5173
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  frps-postgres-data:
