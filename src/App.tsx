@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ReactFlow, Background, Controls, MiniMap, addEdge, applyEdgeChanges,
   applyNodeChanges, Handle, Position, type Node, type Edge, type Connection,
@@ -43,18 +43,42 @@ const initialTurtle: TurtleField[] = [
   { title: 'Output', subtitle: 'Ergebnisse & Empfänger', content: 'Geprüfte und bewertete Anforderung\nDokumentierte Freigabeentscheidung\nInformation an nachgelagerte Prozesse', icon: 'output' }
 ];
 type Tab = 'designer' | 'turtle' | 'overview' | 'documents';
+
+const DRAFT_KEY = 'frps-workspace-draft-v1';
+type WorkspaceDraft = {
+  nodes: Node<ProcessData>[];
+  edges: Edge[];
+  processName: string;
+  owner: string;
+  description: string;
+  turtleFields: TurtleField[];
+  risks: string;
+  opportunities: string;
+};
+function readDraft(): Partial<WorkspaceDraft> {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    return raw ? JSON.parse(raw) as Partial<WorkspaceDraft> : {};
+  } catch {
+    return {};
+  }
+}
 export default function App() {
   const [dark, setDark] = useState(() => localStorage.getItem('frps-theme') !== 'light');
   const [tab, setTab] = useState<Tab>('designer');
-  const [nodes, setNodes] = useState(initialNodes);
-  const [edges, setEdges] = useState(initialEdges);
+  const [nodes, setNodes] = useState(() => readDraft().nodes ?? initialNodes);
+  const [edges, setEdges] = useState(() => readDraft().edges ?? initialEdges);
   const [selected, setSelected] = useState('n2');
-  const [processName, setProcessName] = useState('Anforderungsmanagement');
-  const [owner, setOwner] = useState('Leitung Vertrieb');
-  const [description, setDescription] = useState('Kunden- und interne Anforderungen strukturiert erfassen, bewerten, freigeben und an die zuständigen Stellen übergeben.');
-  const [turtleFields, setTurtleFields] = useState(initialTurtle);
+  const [processName, setProcessName] = useState(() => readDraft().processName ?? 'Anforderungsmanagement');
+  const [owner, setOwner] = useState(() => readDraft().owner ?? 'Leitung Vertrieb');
+  const [description, setDescription] = useState(() => readDraft().description ?? 'Kunden- und interne Anforderungen strukturiert erfassen, bewerten, freigeben und an die zuständigen Stellen übergeben.');
+  const [turtleFields, setTurtleFields] = useState(() => readDraft().turtleFields ?? initialTurtle);
   const [risks, setRisks] = useState('Unvollständige oder widersprüchliche Anforderungen\nVerzögerte Prüfung und Freigabe\nInformationsverlust an Prozessschnittstellen');
   const [opportunities, setOpportunities] = useState('Standardisierte digitale Erfassung\nWeniger Rückfragen durch Vollständigkeitsprüfung\nTransparente Übergabe an Folgeprozesse');
+  useEffect(() => {
+    const draft: WorkspaceDraft = { nodes, edges, processName, owner, description, turtleFields, risks, opportunities };
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); } catch { /* storage may be unavailable or full */ }
+  }, [nodes, edges, processName, owner, description, turtleFields, risks, opportunities]);
   const activeNode = nodes.find(n => n.id === selected);
   const onNodesChange = useCallback((changes: NodeChange<Node<ProcessData>>[]) => setNodes(ns => applyNodeChanges<Node<ProcessData>>(changes, ns)), []);
   const onEdgesChange = useCallback((changes: EdgeChange[]) => setEdges(es => applyEdgeChanges(changes, es)), []);
