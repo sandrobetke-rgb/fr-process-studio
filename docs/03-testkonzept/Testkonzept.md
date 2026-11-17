@@ -14,6 +14,15 @@ Nachweisen, dass Funktionen fachlich korrekt, nachvollziehbar und mit den festge
 8. Light-/Dark-Modus lässt sich umschalten und bleibt beim Neuladen lokal erhalten.
 9. Darstellung ist auf Desktop und schmalen Displays nutzbar.
 
+## Zusätzliche Dokumentenlenkungs-Tests
+1. VA, AA und weitere konfigurierte Dokumentarten lassen sich aus Vorlagen als Entwurf anlegen.
+2. Ein Dokument lässt sich einem oder mehreren Prozessen und Prozessschritten zuordnen.
+3. Dokumente sind aus der Prozessansicht auffindbar und umgekehrt.
+4. Freigegebene Versionen können nicht direkt überschrieben werden; Änderungen erzeugen eine neue Version.
+5. Nur berechtigte Rollen können prüfen, freigeben und veröffentlichen.
+6. Ablösung, Prüfdatum, Änderungsgrund und Historie sind nachvollziehbar.
+7. PDF-Ausgabe enthält Dokumenten-ID, Version, Status und F&R-Kennzeichnung.
+
 ## Spätere automatisierte Tests
 - Unit-Tests für Prozessmodell und Validierungsregeln
 - API- und Berechtigungstests
