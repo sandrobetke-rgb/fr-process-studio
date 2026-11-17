@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from .config import settings
 from .database import get_db
 from .models import AuditEvent, DocumentMaster, DocumentProcessLink, DocumentType, DocumentVersion, ManagementSystemArea, Process, ProcessVersion
-from .schemas import DocumentCreate, DocumentProcessLinkCreate, DocumentProcessLinkRead, DocumentRead, DocumentVersionCreate, DocumentVersionCreateRead, ProcessCreate, ProcessRead
+from .schemas import DocumentCreate, DocumentProcessLinkCreate, DocumentProcessLinkRead, DocumentRead, DocumentVersionCreate, DocumentVersionCreateRead, ProcessCreate, ProcessRead, ProcessVersionCreate
 
 app = FastAPI(title=settings.app_name, version="0.1.0")
 app.add_middleware(
@@ -215,3 +215,37 @@ def link_document_to_process(document_id: str, payload: DocumentProcessLinkCreat
     db.commit()
     db.refresh(link)
     return link
+
+
+
+@app.post("/api/processes/{process_id}/versions", response_model=ProcessRead, status_code=status.HTTP_201_CREATED)
+def create_process_version(process_id: str, payload: ProcessVersionCreate, db: Session = Depends(get_db)) -> Process:
+    process = db.get(Process, process_id)
+    if process is None:
+        raise HTTPException(status_code=404, detail="Prozess nicht gefunden")
+    latest = db.scalar(
+        select(ProcessVersion)
+        .where(ProcessVersion.process_id == process_id)
+        .order_by(ProcessVersion.version_number.desc())
+        .limit(1)
+    )
+    version = ProcessVersion(
+        version_number=(latest.version_number if latest else 0) + 1,
+        name=payload.name,
+        description=payload.description,
+        content=payload.content,
+        change_reason=payload.change_reason,
+        status="DRAFT",
+    )
+    process.versions.append(version)
+    process.status = "DRAFT"
+    db.add(AuditEvent(
+        action="PROCESS_VERSION_CREATED",
+        object_type="Process",
+        object_id=process.id,
+        version_id=version.id,
+        reason=payload.change_reason,
+    ))
+    db.commit()
+    db.refresh(process)
+    return process
