@@ -1,7 +1,7 @@
 # Lastenheft – F&R Process Studio
 
 **Dokument-ID:** LF-FRPS-001  
-**Version:** 0.8  
+**Version:** 0.9  
 **Stand:** 17.11.2026  
 **Status:** Arbeitsstand – UI-Entwicklung
 
@@ -44,6 +44,19 @@ Die Anwendung muss gelenkte Dokumente direkt erstellen, bearbeiten, versionieren
 Dokumente müssen über eindeutige Dokumentenkennung, Titel, Dokumentart, Systembereich (IATF 16949 oder integrierter Umwelt-/Energie-/Arbeitsschutzbereich), Prozesse, Prozessschritte, Verantwortliche, Ersteller, Prüfer, Freigeber, Version, Status, Erstell-/Freigabedatum und nächstes Prüfdatum verwaltet werden können. Ein Dokument kann mehreren Prozessen oder Prozessschritten zugeordnet sein; ein Prozess kann mehrere Dokumente referenzieren. Zuordnungen müssen in Prozessansicht, Turtle/Steckbrief und Dokumentenübersicht sichtbar sein.
 
 Vorlagen mit einheitlichem F&R-Layout und „© splash Syncworks“ unterstützen. Dokumente müssen als Entwurf erstellt und bearbeitet werden können; Freigabe und Veröffentlichung erfolgen ausschließlich über definierte menschliche Rollen. Alte Versionen bleiben nachvollziehbar und dürfen nicht unbemerkt überschrieben werden. Ersetzte Versionen werden als ungültig/abgelöst gekennzeichnet und bleiben gemäß Aufbewahrungsregeln historisch verfügbar. Dokumente müssen mit Anlagen, Bildern und relevanten Medien verknüpft werden können. PDF-Export mit Dokumentenmetadaten ist vorzusehen.
+
+
+
+Die Dokumentenlenkung umfasst zusätzlich die Steuerung des gesamten gültigen Dokumentenbestands:
+- Zentrales Dokumentenregister mit eindeutiger Kennung, Titel, Typ, Systembereich, Prozesseigner, Dokumentenverantwortlichem, Version, Status, Freigabe-/Gültigkeitsdatum, nächstem Prüftermin und Aufbewahrungsregel.
+- Gültigkeits- und Verteilungssteuerung: Veröffentlichung der gültigen Fassung an definierte Zielgruppen, Standorte, Abteilungen und Rollen. Zugriff auf abgelöste Fassungen ist auf berechtigte Rollen (z. B. QM/Auditoren) zu begrenzen und deutlich als ungültig zu kennzeichnen.
+- Vermeidung der Nutzung veralteter Fassungen: zentrale Verlinkung statt unkontrollierter Dateikopien, sichtbarer Gültigkeitsstatus, automatische Sperrung/Entzug der alten Mitarbeiteransicht bei Ablösung und nachvollziehbare Information betroffener Nutzer.
+- Kenntnisnahme/Unterweisung: je Dokument oder Zielgruppe konfigurierbare Lesebestätigung und – falls erforderlich – dokumentierte Unterweisung mit Person, Dokumentversion, Datum, Ergebnis und ggf. Wirksamkeitsprüfung.
+- Externe Dokumente: gelenkte Verwaltung externer Vorgaben und Referenzdokumente (Quelle, Herausgeber, Ausgabestand, Gültigkeitsprüfung, Verantwortlicher, Prüftermin, betroffene Prozesse) einschließlich Änderungsüberwachung, soweit technisch verfügbar.
+- Regelmäßige und anlassbezogene Dokumentenprüfung mit Wiedervorlage, Erinnerungen, Eskalation, Prüfergebnis und dokumentierter Entscheidung „weiter gültig“, „ändern“ oder „zurückziehen“.
+- Geordnete Außerkraftsetzung und Archivierung: Dokumente werden nicht spurlos gelöscht. Rückzug, Ersetzungsdokument, Grund, Datum und betroffene Prozesse/Zielgruppen bleiben nachvollziehbar.
+- Massenänderungen, Dokumentenlisten und Statusberichte: Filter nach Dokumentart, Systembereich, Prozess, Standort, Verantwortlichem, Status und Fälligkeit; Export einer aktuellen gelenkten Dokumentenliste.
+- Notfall-/Sofortänderungen mit gesondertem beschleunigtem Workflow, klarer Kennzeichnung, nachträglicher regulärer Prüfung und vollständiger Protokollierung.
 
 ### 4.6 Mitarbeiteransicht
 Freigegebene Prozesse in einfacher, verständlicher Sprache darstellen. Prozessschritte, Rollen, relevante Arbeitsanweisungen und Dokumente sowie optionale Bilder/Videos unterstützen. Responsive Nutzung auf PC, Tablet und Smartphone.
