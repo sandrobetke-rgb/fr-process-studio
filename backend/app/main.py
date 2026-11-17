@@ -8,8 +8,8 @@ from sqlalchemy.orm import Session
 
 from .config import settings
 from .database import get_db
-from .models import AuditEvent, DocumentMaster, DocumentType, DocumentVersion, ManagementSystemArea, Process, ProcessVersion
-from .schemas import DocumentCreate, DocumentRead, DocumentVersionCreate, DocumentVersionCreateRead, ProcessCreate, ProcessRead
+from .models import AuditEvent, DocumentMaster, DocumentProcessLink, DocumentType, DocumentVersion, ManagementSystemArea, Process, ProcessVersion
+from .schemas import DocumentCreate, DocumentProcessLinkCreate, DocumentProcessLinkRead, DocumentRead, DocumentVersionCreate, DocumentVersionCreateRead, ProcessCreate, ProcessRead
 
 app = FastAPI(title=settings.app_name, version="0.1.0")
 app.add_middleware(
@@ -170,3 +170,48 @@ def create_document_version(document_id: str, payload: DocumentVersionCreate, db
     db.commit()
     db.refresh(version)
     return version
+
+
+
+@app.get("/api/documents/{document_id}/process-links", response_model=list[DocumentProcessLinkRead])
+def list_document_process_links(document_id: str, db: Session = Depends(get_db)) -> list[DocumentProcessLink]:
+    if db.get(DocumentMaster, document_id) is None:
+        raise HTTPException(status_code=404, detail="Dokument nicht gefunden")
+    return list(db.scalars(
+        select(DocumentProcessLink)
+        .where(DocumentProcessLink.document_id == document_id)
+        .order_by(DocumentProcessLink.created_at)
+    ).all())
+
+
+@app.post("/api/documents/{document_id}/process-links", response_model=DocumentProcessLinkRead, status_code=status.HTTP_201_CREATED)
+def link_document_to_process(document_id: str, payload: DocumentProcessLinkCreate, db: Session = Depends(get_db)) -> DocumentProcessLink:
+    if db.get(DocumentMaster, document_id) is None:
+        raise HTTPException(status_code=404, detail="Dokument nicht gefunden")
+    if db.get(Process, payload.process_id) is None:
+        raise HTTPException(status_code=404, detail="Prozess nicht gefunden")
+    existing = db.scalar(
+        select(DocumentProcessLink).where(
+            DocumentProcessLink.document_id == document_id,
+            DocumentProcessLink.process_id == payload.process_id,
+            DocumentProcessLink.process_step_id == payload.process_step_id,
+        )
+    )
+    if existing is not None:
+        raise HTTPException(status_code=409, detail="Diese Dokument-Prozess-Zuordnung besteht bereits")
+    link = DocumentProcessLink(
+        document_id=document_id,
+        process_id=payload.process_id,
+        process_step_id=payload.process_step_id,
+    )
+    db.add(link)
+    db.flush()
+    db.add(AuditEvent(
+        action="DOCUMENT_LINKED_TO_PROCESS",
+        object_type="DocumentProcessLink",
+        object_id=link.id,
+        reason=f"Dokument {document_id} mit Prozess {payload.process_id} verknüpft",
+    ))
+    db.commit()
+    db.refresh(link)
+    return link
