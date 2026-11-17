@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field
 class ProcessCreate(BaseModel):
     process_number: str = Field(min_length=1, max_length=64)
     owner: str = Field(default="", max_length=200)
+    system_area_code: str = Field(default="IATF_QM", pattern=r"^(IATF_QM|IMS_ENV_ENERGY_OHS)$")
     name: str = Field(min_length=1, max_length=250)
     description: str = ""
     content: dict = Field(default_factory=dict)
@@ -27,6 +28,7 @@ class ProcessRead(BaseModel):
     id: str
     process_number: str
     owner: str
+    system_area_code: str
     status: str
     versions: list[ProcessVersionRead]
 
