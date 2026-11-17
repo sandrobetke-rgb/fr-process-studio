@@ -79,3 +79,17 @@ class DocumentVersionCreateRead(BaseModel):
     status: str
     content_hash: str
     created_at: datetime
+
+
+class DocumentProcessLinkCreate(BaseModel):
+    process_id: str = Field(min_length=1, max_length=36)
+    process_step_id: str = Field(default="", max_length=100)
+
+
+class DocumentProcessLinkRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: str
+    document_id: str
+    process_id: str
+    process_step_id: str
+    created_at: datetime
