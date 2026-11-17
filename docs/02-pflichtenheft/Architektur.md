@@ -1,7 +1,7 @@
 # Architektur – F&R Process Studio
 
 ## Systemkontext
-F&R Process Studio verwaltet IMS-Prozessmodelle und zugehörige dokumentierte Informationen. Das GitHub-Repository enthält ausschließlich Quellcode und technische Dokumentation, nicht die produktiven IMS-Daten.
+F&R Process Studio verwaltet Prozessmodelle des IATF-Managementsystems einschließlich integrierter Umwelt- und Energiethemen sowie arbeitsschutzbezogener Prozesse und zugehörige dokumentierte Informationen. Das GitHub-Repository enthält ausschließlich Quellcode und technische Dokumentation, nicht die produktiven IMS-Daten.
 
 ## Komponenten
 1. Web-Frontend: Prozessdesigner, Prozesslandkarte, Turtle-Ansicht, Mitarbeiteransicht, Cockpit.
