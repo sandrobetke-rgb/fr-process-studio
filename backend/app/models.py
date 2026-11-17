@@ -29,6 +29,7 @@ class Process(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     process_number: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
     owner: Mapped[str] = mapped_column(String(200), default="")
+    system_area_code: Mapped[str] = mapped_column(String(64), default="IATF_QM", nullable=False)
     status: Mapped[str] = mapped_column(String(32), default="DRAFT", nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
     versions: Mapped[list["ProcessVersion"]] = relationship(back_populates="process", cascade="all, delete-orphan")
