@@ -1,0 +1,8 @@
+# Änderungshistorie – F&R Process Studio
+
+| Version | Datum | Änderung | Status |
+|---|---|---|---|
+| 0.1 | 17.11.2026 | Initiale Anforderungssammlung und Projektumfang | Erfasst |
+| 0.2 | 17.11.2026 | Light-/Dark-Modus und Copyright-Vorgabe ergänzt | Erfasst |
+| 0.3 | 17.11.2026 | Erstes Lastenheft im GitHub-Repository angelegt | Erfasst |
+| 0.4 | 17.11.2026 | Technischer Prototypumfang und Umsetzungsstatus dokumentiert | Erfasst |
