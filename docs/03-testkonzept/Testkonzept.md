@@ -23,6 +23,16 @@ Nachweisen, dass Funktionen fachlich korrekt, nachvollziehbar und mit den festge
 6. Ablösung, Prüfdatum, Änderungsgrund und Historie sind nachvollziehbar.
 7. PDF-Ausgabe enthält Dokumenten-ID, Version, Status und F&R-Kennzeichnung.
 
+## Zusätzliche Tests für die vollständige Dokumentenlenkung
+1. Dokumentenregister zeigt ausschließlich aktuelle Gültigkeitsinformationen als Standardansicht.
+2. Bei Ablösung wird die alte Fassung aus der Mitarbeiteransicht entfernt und als ungültig markiert.
+3. Zielgruppen, Standorte und Rollen erhalten die für sie gültigen Fassungen.
+4. Kenntnisnahme und Unterweisung sind an die exakte Dokumentversion gebunden und exportierbar.
+5. Überfällige Prüfungen lösen Erinnerungen und definierte Eskalationen aus.
+6. Externe Dokumente zeigen Quelle, Ausgabestand, Verantwortlichen und letzten Prüfstatus.
+7. Außerkraftsetzung und Archivierung lassen Dokument, Grund, Nachfolger und Historie nachvollziehen.
+8. Notfalländerungen durchlaufen den Sonderworkflow und werden anschließend regulär überprüft.
+
 ## Zusätzliche Workflow-, Audit- und Signaturtests
 1. Workflow erzwingt die konfigurierte Reihenfolge und Zuständigkeiten.
 2. Ersteller können ihre eigenen Dokumente nicht unzulässig selbst freigeben.
